@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Card UI Text Editor">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Online Editor</title>
+
+    <style>
+        /* Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+
+        /* Full-Screen Layout */
+        body, html {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #f4f4f4;
+        }
+
+        /* Header Card */
+        .header-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin: 10px;
+        }
+
+        /* Button Styling */
+        .icon-btn {
+            cursor: pointer;
+            font-size: 1em;
+            color: #007bff;
+            background: none;
+            border: none;
+            outline: none;
+            padding: 5px;
+            margin-left: 8px;
+        }
+
+        .delete-btn {
+            color: #dc3545; /* Red color for delete */
+        }
+
+        /* Input for Editable Header */
+        .header-input {
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            outline: none;
+            background: transparent;
+            width: 100%;
+        }
+
+        /* Textarea Container */
+        .editor-container {
+            flex: 1;
+            display: flex;
+            padding: 10px;
+        }
+
+        /* Card for Textarea */
+        .editor-card {
+            width: 100%;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+        }
+
+        /* Textarea Styling */
+        textarea {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            font-size: 1.2em;
+            resize: none;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Card -->
+    <div class="header-card">
+        <input type="text" id="headerTitle" class="header-input" value="Online Text Editor" readonly>
+        <button class="icon-btn" id="editHeader" title="Edit Header">✏️</button>
+        <button class="icon-btn" id="saveHeader" style="display: none;" title="Save Header">💾</button>
+        <button class="icon-btn delete-btn" id="deleteHeader" title="Delete All Storage Data">🗑️</button>
+    </div>
+
+    <!-- Full-Screen Textarea -->
+    <div class="editor-container">
+        <div class="editor-card">
+            <textarea id="mycontent" placeholder="Type something here..."></textarea>
+        </div>
+    </div>
+
+    <script>
+        // Load saved header and content
+        document.getElementById('headerTitle').value = localStorage.getItem('headerTitle') || 'Online Text Editor';
+        document.getElementById('mycontent').value = localStorage.getItem('content') || '';
+
+        let headerInput = document.getElementById('headerTitle');
+        let editBtn = document.getElementById('editHeader');
+        let saveBtn = document.getElementById('saveHeader');
+        let deleteBtn = document.getElementById('deleteHeader');
+
+        // Edit Header
+        editBtn.addEventListener('click', function () {
+            headerInput.readOnly = false;
+            headerInput.focus();
+            headerInput.value = localStorage.getItem('headerTitle') || '';
+            headerInput.placeholder = 'Online Text Editor';
+            editBtn.style.display = 'none';
+            saveBtn.style.display = 'inline';
+        });
+
+        // Save Header
+        saveBtn.addEventListener('click', function () {
+            headerInput.readOnly = true;
+            if (headerInput.value.trim()) {
+                localStorage.setItem('headerTitle', headerInput.value);
+            } else {
+                headerInput.value = 'Online Text Editor';
+            }
+            saveBtn.style.display = 'none';
+            editBtn.style.display = 'inline';
+        });
+
+        // Save content on keyup
+        document.getElementById('mycontent').addEventListener('keyup', function () {
+            localStorage.setItem('content', this.value);
+        });
+
+        // Delete Local Storage Data
+        deleteBtn.addEventListener('click', function () {
+            localStorage.removeItem('headerTitle');
+            localStorage.removeItem('content');
+            headerInput.value = 'Online Text Editor';
+            document.getElementById('mycontent').value = '';
+        });
+    </script>
+
+</body>
+</html>

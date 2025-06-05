@@ -149,6 +149,13 @@
             headerInput.value = 'Online Text Editor';
             document.getElementById('mycontent').value = '';
         });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const textarea = document.getElementById('mycontent');
+            textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
+            textarea.scrollTop = textarea.scrollHeight;
+            textarea.focus();
+        });
     </script>
 
 </body>

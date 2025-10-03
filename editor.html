@@ -1,17 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
-    <meta name="description" content="Card UI Text Editor">
+    <meta name="description" content="Rich Text Editor">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <title>Online Editor</title>
+    <title>Online Text Editor</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="rotate.png">
+    <link rel="shortcut icon" type="image/png" href="rotate.png">
+    <link rel="apple-touch-icon" href="rotate.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=SUSE+Mono:ital,wght@0,100..800;1,100..800&display=swap"
+        rel="stylesheet">
 
     <style>
         /* Reset */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "SUSE Mono", monospace;
+        }
+
+        .suse-mono-regular {
+            font-family: "SUSE Mono", monospace;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+        }
 
         /* Full-Screen Layout */
-        body, html {
+        body,
+        html {
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -20,6 +44,11 @@
 
         /* Header Card */
         .header-card {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            z-index: 1000;
             background: #fff;
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -30,7 +59,19 @@
             font-size: 1.5em;
             font-weight: bold;
             color: #333;
-            margin: 10px;
+        }
+
+        /* Logo Styling */
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
         }
 
         /* Button Styling */
@@ -46,7 +87,65 @@
         }
 
         .delete-btn {
-            color: #dc3545; /* Red color for delete */
+            color: #dc3545;
+            /* Red color for delete */
+        }
+
+        /* Toolbar Styling */
+        .toolbar-card {
+            position: fixed;
+            top: 80px;
+            left: 10px;
+            right: 10px;
+            z-index: 999;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .toolbar-btn {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #495057;
+            transition: all 0.2s;
+        }
+
+        .toolbar-btn:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .toolbar-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .toolbar-separator {
+            width: 1px;
+            height: 25px;
+            background: #dee2e6;
+            margin: 0 5px;
+        }
+
+
+
+        .toolbar-status {
+            margin-left: auto;
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #6c757d;
+            align-items: center;
         }
 
         /* Input for Editable Header */
@@ -64,6 +163,7 @@
             flex: 1;
             display: flex;
             padding: 10px;
+            margin-top: 140px;
         }
 
         /* Card for Textarea */
@@ -76,87 +176,367 @@
             display: flex;
         }
 
-        /* Textarea Styling */
-        textarea {
+        /* Rich Text Editor Styling */
+        .rich-editor {
             width: 100%;
             height: 100%;
             border: none;
             outline: none;
             font-size: 1.2em;
-            resize: none;
             padding: 15px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+
+        .rich-editor:focus {
+            outline: none;
+        }
+
+        /* List Styling */
+        .rich-editor ol {
+            padding-left: 25px;
+            margin-left: 0;
+        }
+
+        .rich-editor ul {
+            padding-left: 25px;
+            margin-left: 0;
+        }
+
+        .rich-editor li {
+            margin-bottom: 5px;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            background: #f8f9fa;
+            padding: 8px 15px;
+            font-size: 12px;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            border-radius: 0 0 10px 10px;
         }
     </style>
 </head>
+
 <body>
 
     <!-- Header Card -->
     <div class="header-card">
-        <input type="text" id="headerTitle" class="header-input" value="Online Text Editor" readonly>
-        <button class="icon-btn" id="editHeader" title="Edit Header">✏️</button>
-        <button class="icon-btn" id="saveHeader" style="display: none;" title="Save Header">💾</button>
-        <button class="icon-btn delete-btn" id="deleteHeader" title="Delete All Storage Data">🗑️</button>
+        <div class="header-logo">
+            <img src="rotate.png" alt="Logo" class="logo-img">
+            <input type="text" id="headerTitle" class="header-input" value="Rich Text Editor" readonly>
+        </div>
+        <div>
+            <button class="icon-btn" id="editHeader" title="Edit Header">✏️</button>
+            <button class="icon-btn" id="saveHeader" style="display: none;" title="Save Header">💾</button>
+            <button class="icon-btn delete-btn" id="deleteHeader" title="Delete All Storage Data">🗑️</button>
+        </div>
     </div>
 
-    <!-- Full-Screen Textarea -->
+    <!-- Toolbar Card -->
+    <div class="toolbar-card">
+        <button class="toolbar-btn" id="boldBtn" title="Bold"><b>B</b></button>
+        <button class="toolbar-btn" id="italicBtn" title="Italic"><i>I</i></button>
+        <button class="toolbar-btn" id="underlineBtn" title="Underline"><u>U</u></button>
+        <button class="toolbar-btn" id="strikeBtn" title="Strikethrough"><s>S</s></button>
+
+        <div class="toolbar-separator"></div>
+
+        <button class="toolbar-btn" id="leftAlign" title="Align Left">⬅️</button>
+        <button class="toolbar-btn" id="centerAlign" title="Center">⬆️</button>
+        <button class="toolbar-btn" id="rightAlign" title="Align Right">➡️</button>
+
+        <div class="toolbar-separator"></div>
+
+        <button class="toolbar-btn" id="orderedList" title="Numbered List">1.</button>
+        <button class="toolbar-btn" id="unorderedList" title="Bullet List">•</button>
+
+        <div class="toolbar-separator"></div>
+
+        <button class="toolbar-btn" id="undoBtn" title="Undo">↶</button>
+        <button class="toolbar-btn" id="redoBtn" title="Redo">↷</button>
+
+        <div class="toolbar-separator"></div>
+
+        <input type="color" id="textColor" title="Text Color" value="#000000"
+            style="width: 30px; height: 25px; border: none; border-radius: 3px;">
+        <input type="color" id="bgColor" title="Background Color" value="#ffffff"
+            style="width: 30px; height: 25px; border: none; border-radius: 3px;">
+
+        <div class="toolbar-status">
+            <span id="lastSaved">Auto-saved</span>
+            <span id="wordCount">Words: 0 | Characters: 0</span>
+        </div>
+    </div>
+
+    <!-- Rich Text Editor -->
     <div class="editor-container">
         <div class="editor-card">
-            <textarea id="mycontent" placeholder="Type something here..."></textarea>
+            <div id="richEditor" class="rich-editor" contenteditable="true"
+                placeholder="Start typing your rich text here..."></div>
         </div>
     </div>
 
     <script>
-        // Load saved header and content
-        document.getElementById('headerTitle').value = localStorage.getItem('headerTitle') || 'Online Text Editor';
-        document.getElementById('mycontent').value = localStorage.getItem('content') || '';
+        // Rich Text Editor Implementation
+        class RichTextEditor {
+            constructor() {
+                this.editor = document.getElementById('richEditor');
+                this.headerInput = document.getElementById('headerTitle');
+                this.editBtn = document.getElementById('editHeader');
+                this.saveBtn = document.getElementById('saveHeader');
+                this.deleteBtn = document.getElementById('deleteHeader');
+                this.wordCountEl = document.getElementById('wordCount');
+                this.lastSavedEl = document.getElementById('lastSaved');
 
-        let headerInput = document.getElementById('headerTitle');
-        let editBtn = document.getElementById('editHeader');
-        let saveBtn = document.getElementById('saveHeader');
-        let deleteBtn = document.getElementById('deleteHeader');
-
-        // Edit Header
-        editBtn.addEventListener('click', function () {
-            headerInput.readOnly = false;
-            headerInput.focus();
-            headerInput.value = localStorage.getItem('headerTitle') || '';
-            headerInput.placeholder = 'Online Text Editor';
-            editBtn.style.display = 'none';
-            saveBtn.style.display = 'inline';
-        });
-
-        // Save Header
-        saveBtn.addEventListener('click', function () {
-            headerInput.readOnly = true;
-            if (headerInput.value.trim()) {
-                localStorage.setItem('headerTitle', headerInput.value);
-            } else {
-                headerInput.value = 'Online Text Editor';
+                this.init();
             }
-            saveBtn.style.display = 'none';
-            editBtn.style.display = 'inline';
+
+            init() {
+                this.loadContent();
+                this.setupEventListeners();
+                this.setupToolbar();
+                this.updateWordCount();
+                this.setCursorToEnd();
+            }
+
+            loadContent() {
+                this.headerInput.value = localStorage.getItem('headerTitle') || 'Rich Text Editor';
+                this.editor.innerHTML = localStorage.getItem('richContent') || '';
+            }
+
+            saveContent() {
+                localStorage.setItem('richContent', this.editor.innerHTML);
+                this.lastSavedEl.textContent = 'Saved at ' + new Date().toLocaleTimeString();
+                setTimeout(() => {
+                    this.lastSavedEl.textContent = 'Auto-saved';
+                }, 2000);
+            }
+
+            setupEventListeners() {
+                // Header editing
+                this.editBtn.addEventListener('click', () => {
+                    this.headerInput.readOnly = false;
+                    this.headerInput.focus();
+                    this.headerInput.placeholder = 'Rich Text Editor';
+                    this.editBtn.style.display = 'none';
+                    this.saveBtn.style.display = 'inline';
+                });
+
+                this.saveBtn.addEventListener('click', () => {
+                    this.headerInput.readOnly = true;
+                    if (this.headerInput.value.trim()) {
+                        localStorage.setItem('headerTitle', this.headerInput.value);
+                    } else {
+                        this.headerInput.value = 'Rich Text Editor';
+                    }
+                    this.saveBtn.style.display = 'none';
+                    this.editBtn.style.display = 'inline';
+                });
+
+                // Auto-save content
+                this.editor.addEventListener('input', () => {
+                    this.saveContent();
+                    this.updateWordCount();
+                });
+
+                // Delete all data
+                this.deleteBtn.addEventListener('click', () => {
+                    if (confirm('Are you sure you want to delete all content?')) {
+                        localStorage.removeItem('headerTitle');
+                        localStorage.removeItem('richContent');
+                        this.headerInput.value = 'Rich Text Editor';
+                        this.editor.innerHTML = '';
+                        this.updateWordCount();
+                    }
+                });
+
+                // Handle paste to clean up formatting
+                this.editor.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    const text = e.clipboardData.getData('text/plain');
+                    document.execCommand('insertText', false, text);
+                });
+            }
+
+            setupToolbar() {
+                // Formatting buttons
+                document.getElementById('boldBtn').addEventListener('click', () => {
+                    document.execCommand('bold');
+                    this.updateButtonStates();
+                });
+
+                document.getElementById('italicBtn').addEventListener('click', () => {
+                    document.execCommand('italic');
+                    this.updateButtonStates();
+                });
+
+                document.getElementById('underlineBtn').addEventListener('click', () => {
+                    document.execCommand('underline');
+                    this.updateButtonStates();
+                });
+
+                document.getElementById('strikeBtn').addEventListener('click', () => {
+                    document.execCommand('strikethrough');
+                    this.updateButtonStates();
+                });
+
+                // Alignment
+                document.getElementById('leftAlign').addEventListener('click', () => {
+                    document.execCommand('justifyLeft');
+                });
+
+                document.getElementById('centerAlign').addEventListener('click', () => {
+                    document.execCommand('justifyCenter');
+                });
+
+                document.getElementById('rightAlign').addEventListener('click', () => {
+                    document.execCommand('justifyRight');
+                });
+
+                // Lists
+                document.getElementById('orderedList').addEventListener('click', () => {
+                    document.execCommand('insertOrderedList');
+                });
+
+                document.getElementById('unorderedList').addEventListener('click', () => {
+                    document.execCommand('insertUnorderedList');
+                });
+
+                // Undo/Redo
+                document.getElementById('undoBtn').addEventListener('click', () => {
+                    document.execCommand('undo');
+                });
+
+                document.getElementById('redoBtn').addEventListener('click', () => {
+                    document.execCommand('redo');
+                });
+
+                // Colors
+                document.getElementById('textColor').addEventListener('change', (e) => {
+                    document.execCommand('foreColor', false, e.target.value);
+                });
+
+                document.getElementById('bgColor').addEventListener('change', (e) => {
+                    document.execCommand('backColor', false, e.target.value);
+                });
+
+                // Update button states on selection change
+                this.editor.addEventListener('selectionchange', () => {
+                    this.updateButtonStates();
+                });
+
+                document.addEventListener('selectionchange', () => {
+                    this.updateButtonStates();
+                });
+            }
+
+            updateButtonStates() {
+                // Update toolbar button states based on current selection
+                const buttons = {
+                    'boldBtn': 'bold',
+                    'italicBtn': 'italic',
+                    'underlineBtn': 'underline',
+                    'strikeBtn': 'strikethrough'
+                };
+
+                Object.entries(buttons).forEach(([btnId, command]) => {
+                    const btn = document.getElementById(btnId);
+                    if (document.queryCommandState(command)) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+
+            updateWordCount() {
+                const text = this.editor.innerText || this.editor.textContent || '';
+                const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+                const characters = text.length;
+                this.wordCountEl.textContent = `Words: ${words} | Characters: ${characters}`;
+            }
+
+            setCursorToEnd() {
+                // Focus the editor first
+                this.editor.focus();
+
+                // Use setTimeout to ensure DOM is fully rendered
+                setTimeout(() => {
+                    // Create a range and selection to position cursor at the end
+                    const range = document.createRange();
+                    const selection = window.getSelection();
+
+                    // Select all content in the editor
+                    range.selectNodeContents(this.editor);
+
+                    // Collapse the range to the end (cursor at the end)
+                    range.collapse(false);
+
+                    // Clear any existing selections and set the new range
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+
+                    // Force scroll to bottom with multiple methods for reliability
+                    this.editor.scrollTop = this.editor.scrollHeight;
+                    this.editor.scrollIntoView({ behavior: 'instant', block: 'end' });
+
+                    // Additional scroll using scrollTo method
+                    this.editor.scrollTo({
+                        top: this.editor.scrollHeight,
+                        behavior: 'instant'
+                    });
+
+                    // Ensure the cursor position is visible
+                    if (selection.rangeCount > 0) {
+                        const rect = selection.getRangeAt(0).getBoundingClientRect();
+                        if (rect.bottom > window.innerHeight || rect.top < 0) {
+                            selection.getRangeAt(0).scrollIntoView({ behavior: 'instant', block: 'nearest' });
+                        }
+                    }
+                }, 10);
+            }
+        }
+
+        // Initialize the editor when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new RichTextEditor();
         });
 
-        // Save content on keyup
-        document.getElementById('mycontent').addEventListener('keyup', function () {
-            localStorage.setItem('content', this.value);
-        });
+        // Add placeholder functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const editor = document.getElementById('richEditor');
 
-        // Delete Local Storage Data
-        deleteBtn.addEventListener('click', function () {
-            localStorage.removeItem('headerTitle');
-            localStorage.removeItem('content');
-            headerInput.value = 'Online Text Editor';
-            document.getElementById('mycontent').value = '';
-        });
+            function togglePlaceholder() {
+                if (editor.innerHTML.trim() === '' || editor.innerHTML === '<br>') {
+                    editor.setAttribute('data-placeholder', 'Start typing your rich text here...');
+                } else {
+                    editor.removeAttribute('data-placeholder');
+                }
+            }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const textarea = document.getElementById('mycontent');
-            textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
-            textarea.scrollTop = textarea.scrollHeight;
-            textarea.focus();
+            editor.addEventListener('input', togglePlaceholder);
+            editor.addEventListener('focus', togglePlaceholder);
+            editor.addEventListener('blur', togglePlaceholder);
+
+            // Add CSS for placeholder
+            const style = document.createElement('style');
+            style.textContent = `
+                .rich-editor[data-placeholder]:empty:before {
+                    content: attr(data-placeholder);
+                    color: #6c757d;
+                    font-style: italic;
+                }
+            `;
+            document.head.appendChild(style);
+
+            togglePlaceholder();
         });
     </script>
 
 </body>
+
 </html>

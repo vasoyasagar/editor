@@ -1,172 +1,191 @@
 # Rich Text Editor
 
-A modern, minimalist web-based text editor with rich formatting capabilities and a beautiful monospace design. Built with SUSE Mono font for a clean, professional writing experience.
+A modern, offline-first, multi-document rich text editor that runs entirely in your browser. No accounts, no servers, no telemetry — your documents live in your browser's IndexedDB and never leave your device.
 
 ![Editor Preview](rotate.png)
 
-## ✨ Features
+> **Live demo:** https://vasoyasagar.github.io/editor/
 
-### 🎨 Modern Design
-- **SUSE Mono Font**: Beautiful monospace typography from Google Fonts
-- **Fixed Header & Toolbar**: Always-accessible controls that stay at the top
-- **Card-based UI**: Clean, modern interface with subtle shadows
-- **Custom Logo**: Branded interface with rotate.png logo
-- **Responsive Layout**: Perfect on desktop, tablet, and mobile
+---
 
-### ✍️ Rich Text Formatting
-- **Bold**, *Italic*, <u>Underline</u>, and ~~Strikethrough~~ text
-- **Text & Background Colors**: Full color palette with color pickers
-- **Smart Lists**: Properly formatted numbered and bullet lists
-- **Text Alignment**: Left, center, and right alignment options
+## ✨ Highlights
 
-### 🛠️ Editor Controls
-- **Undo/Redo**: Full editing history with keyboard shortcuts
-- **Auto-save**: Instant saving to localStorage as you type
-- **Smart Paste**: Clean paste that removes unwanted formatting
-- **Cursor Positioning**: Auto-focus at document end on page load
+- **Multi-document workspace** with a searchable sidebar, pin / rename / delete, and a live auto-built outline
+- **Block & inline formatting** — headings, blockquote, code blocks, inline code, highlight, links, lists, alignment
+- **Slash commands** (`/`) and Markdown shortcuts (`# `, `## `, `> `, `- `, `1. `, ``` ``` ```)
+- **Checklists** — `- [ ]` / `- [x] ` for clickable, persistable task lists
+- **Tables** with a floating toolbar to add/remove rows & columns and delete the table
+- **Find & replace** with match-case and live count
+- **Floating bubble toolbar** when text is selected
+- **Five themes** — Light, Dark, Sepia, Solarized Light, Nord — plus per-editor font / font-size / line-height
+- **Focus mode** — hides UI chrome for distraction-free writing
+- **Drag-and-drop import** — drop a `.html`, `.txt`, or `.md` file to open it as a new document
+- **File System Access API** — true Save As / Open with the picker (with download / `<input type="file">` fallback)
+- **Storage insights** — live quota ring in the status bar and per-document size breakdown in Settings
+- **Toasts, save indicator, reading time, word/char count, ARIA labels, reduced-motion support**
+- **100% offline-capable, zero runtime dependencies** beyond a tiny IndexedDB helper loaded from a CDN
 
-### 📊 Smart Features
-- **Real-time Statistics**: Live word and character count in toolbar
-- **Save Status**: Visual feedback showing auto-save status
-- **Custom Titles**: Editable document headers with persistence
-- **Data Management**: One-click option to clear all stored data
+---
 
-### 💡 User Experience
-- **Instant Loading**: No dependencies, lightning-fast startup
-- **Keyboard Friendly**: Full keyboard navigation and shortcuts
-- **Clean Interface**: Distraction-free writing environment
-- **Smart Scrolling**: Auto-scroll to cursor position on load
+## 🚀 Quick start
 
-## 🚀 Live Demo
+### Online
+Just open the [live demo](https://vasoyasagar.github.io/editor/).
 
-Access the editor directly via GitHub Pages:
-```
-https://vasoyasagar.github.io/editor/
-```
+### Locally
+The app uses ES modules, so it needs to be served over HTTP (opening `editor.html` from `file://` will be blocked by the browser).
 
-## 💻 Quick Start
+```bash
+# Clone
+git clone https://github.com/vasoyasagar/editor.git
+cd editor
 
-1. **Online**: Visit the live demo link above - works instantly!
-2. **Local**: 
-   - Clone this repository
-   - Open `index.html` in any modern browser
-   - Start writing immediately!
-
-## 🎯 Perfect For
-
-- 📝 **Daily Note Taking**: Quick, formatted notes with instant save
-- 📄 **Document Drafting**: Professional documents with proper formatting  
-- ✏️ **Content Writing**: Blog posts, articles, and creative writing
-- 🎓 **Education**: Teaching formatting concepts and writing skills
-- 💼 **Professional Use**: Meeting notes, project documentation
-- 🚀 **Quick Edits**: Fast text formatting without heavy applications
-- 🔄 **Cross-Device**: Access your notes from any browser, anywhere
-
-## 🛡️ Privacy & Storage
-
-- **100% Local**: All data stays in your browser - nothing sent to servers
-- **Instant Save**: Auto-saves as you type using localStorage
-- **Persistent**: Your content survives browser restarts
-- **Secure**: No accounts needed, no data collection
-- **Portable**: Export your content anytime
-
-## 🔧 Technical Architecture
-
-### Core Technologies
-- **HTML5**: Semantic structure with contenteditable API
-- **CSS3**: Modern styling with flexbox and fixed positioning
-- **Vanilla JavaScript**: Clean ES6+ code with class-based architecture
-- **Google Fonts**: SUSE Mono typography integration
-
-### Key Features
-- **Zero Dependencies**: Completely self-contained, no external libraries
-- **Offline First**: Works without internet after initial load
-- **Progressive Enhancement**: Graceful degradation on older browsers
-- **Memory Efficient**: Lightweight codebase under 15KB total
-- **Real-time Performance**: Instant response with optimized DOM manipulation
-
-### Browser Support
-| Browser | Desktop | Mobile |
-|---------|---------|--------|
-| Chrome | ✅ v60+ | ✅ v60+ |
-| Firefox | ✅ v55+ | ✅ v55+ |
-| Safari | ✅ v12+ | ✅ v12+ |
-| Edge | ✅ v79+ | ✅ v79+ |
-| Opera | ✅ v47+ | ✅ v47+ |
-
-## 🎨 Customization Options
-
-### Easy Modifications
-```css
-/* Change theme colors */
-:root {
-  --primary-color: #007bff;
-  --background-color: #f4f4f4;
-  --card-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Customize fonts */
-.suse-mono-regular {
-  font-weight: 400; /* Change to 300, 500, 600, 700, 800 */
-  font-style: italic; /* Add italic styling */
-}
+# Serve (any static server works)
+python -m http.server 8080
+# then visit http://localhost:8080/editor.html
 ```
 
-### Advanced Customization
-- **Logo**: Replace `rotate.png` with your brand logo
-- **Colors**: Modify CSS custom properties for instant theme changes
-- **Layout**: Adjust card positioning and spacing
-- **Features**: Add/remove toolbar buttons as needed
+Other quick options: `npx serve`, `npx http-server`, or VS Code's *Live Server* extension.
 
-## � Project Structure
+---
+
+## ⌨️ Keyboard shortcuts
+
+| Shortcut | Action |
+| --- | --- |
+| `Ctrl/⌘ + N` | New document |
+| `Ctrl/⌘ + O` | Open file (imports as a new document) |
+| `Ctrl/⌘ + S` | Download / Save As |
+| `Ctrl/⌘ + B` / `I` | Bold / Italic |
+| `Ctrl/⌘ + E` | Inline code |
+| `Ctrl/⌘ + H` | Highlight |
+| `Ctrl/⌘ + K` | Insert / edit link |
+| `Ctrl/⌘ + F` | Find & replace |
+| `Ctrl/⌘ + \` | Focus mode |
+| `Ctrl/⌘ + ,` | Settings |
+| `Ctrl/⌘ + Shift + E` | Toggle documents sidebar |
+| `Ctrl/⌘ + Shift + L` | Toggle outline sidebar |
+| `Ctrl/⌘ + Shift + D` | Toggle dark mode |
+| `/` | Slash menu (at start of line) |
+| `?` | Show all shortcuts |
+| `Esc` | Close dialog / panel / exit focus |
+
+### Markdown shortcuts (auto-convert on space)
+
+| Type | Becomes |
+| --- | --- |
+| `# ` | Heading 1 |
+| `## ` | Heading 2 |
+| `### ` | Heading 3 |
+| `> ` | Blockquote |
+| `- ` / `* ` | Bullet list |
+| `1. ` | Numbered list |
+| ` ``` ` | Code block |
+| `[ ] ` / `[x] ` inside a bullet | Task item |
+
+### Slash commands
+
+`/h1` `/h2` `/h3` `/p` `/quote` `/code` `/ul` `/ol` `/task` `/table` `/date` `/hr`
+
+`/date` inserts today's date as an H1 in `dd/MM/yyyy` format.
+
+---
+
+## 🗂️ Workspace
+
+- **Documents sidebar (left)** — create, search, pin, rename (double-click or ✏️), delete (🗑️). Pinned docs sort to the top, then by most recent edit.
+- **Outline sidebar (right)** — auto-generated from `<h1>`/`<h2>`/`<h3>`. Click any heading to scroll to it.
+- Both sidebars toggle independently and remember state across reloads. On narrow screens they become full-screen drawers.
+
+---
+
+## ⚙️ Settings
+
+Open with `Ctrl + ,` or the ⚙️ button.
+
+- **Theme**: Light / Dark / Sepia / Solarized Light / Nord
+- **Editor font**: SUSE Mono · Inter · Lora · JetBrains Mono · Georgia · System UI
+- **Font size**: 12 – 28 px
+- **Line height**: 1.2 – 2.2
+- **Spellcheck** on / off
+- **Storage usage** ring + per-document size breakdown (click any doc to jump to it)
+- **Reset** to defaults · **Wipe all data** (with confirmation)
+
+---
+
+## 🛡️ Privacy & data
+
+- All documents are stored locally in the browser via **IndexedDB** (`idb-keyval`).
+- A small one-time migration moves any legacy `localStorage` content into IndexedDB, and a second migration upgrades the old single-document store into the multi-document model.
+- Nothing is sent anywhere. There are no analytics, no accounts, and no network requests after the initial page load (fonts + the IndexedDB helper are CDN-cached).
+- Use **Wipe all data** in Settings to completely reset.
+
+---
+
+## 🧱 Tech stack
+
+- **Vanilla HTML/CSS/JS** with ES modules — no build step
+- **[`idb-keyval`](https://github.com/jakearchibald/idb-keyval)** for IndexedDB
+- **File System Access API** for native open/save dialogs (with `<input type="file">` and Blob+anchor fallbacks)
+- **`contenteditable` + `Range`/`Selection` APIs** for rich editing
+- **CSS variables** for theming and per-editor typography
+- **Google Fonts** for SUSE Mono, Inter, Lora, and JetBrains Mono
+
+### Project layout
 
 ```
 editor/
-├── index.html          # Main editor application
-├── editor.html         # Alternative entry point  
-├── rotate.png          # Logo and favicon image
-├── README.md           # This documentation
-└── LICENSE             # MIT License terms
+├── editor.html     # Main app shell
+├── styles.css      # All styling (themes, layout, components)
+├── editor.js       # All app logic (multi-doc model, editing, UI)
+├── index.html      # Landing redirect
+├── rotate.png      # Logo / favicon
+├── README.md
+└── LICENSE
 ```
 
-## 🚀 Deployment
+### Browser support
 
-### GitHub Pages (Recommended)
-1. Fork this repository
-2. Go to Settings → Pages
-3. Select "Deploy from branch: main"
-4. Your editor will be live at `https://yourusername.github.io/editor/`
+Modern Chromium, Firefox, Safari, and Edge (latest two versions). The File System Access API is Chromium-only; other browsers automatically fall back to standard download / file-input behavior.
+
+---
+
+## 🛣️ Roadmap
+
+Planned (Phase 4 — partly landed):
+
+- ✅ Checklists, tables, storage quota ring, per-doc size breakdown
+- ⏳ Export menu (HTML / Markdown / TXT / PDF)
+- ⏳ Trash bin & per-document version history
+- ⏳ Command palette (`Ctrl + P`)
+- ⏳ Pomodoro timer, word-goal tracker, read-aloud
+- ⏳ Split-view Markdown preview
+- ⏳ PWA install + offline service worker
+- ⏳ Optional GitHub Gist sync / AI assist (BYO key)
+
+---
 
 ## 🤝 Contributing
 
-We welcome contributions! Here's how:
+1. Fork the repo
+2. `git checkout -b feature/your-feature`
+3. Commit & push
+4. Open a Pull Request
 
-1. **Fork** the repository
-2. **Create** a feature branch: `git checkout -b feature-name`
-3. **Commit** your changes: `git commit -am 'Add feature'`
-4. **Push** to branch: `git push origin feature-name`
-5. **Submit** a Pull Request
+Bug reports and feature requests are welcome via [GitHub Issues](https://github.com/vasoyasagar/editor/issues).
 
-### Ideas for Contributions
-- 🌙 Dark mode theme
-- 📱 PWA capabilities  
-- 🔍 Find/replace functionality
-- 📊 Export to PDF/Word
-- 🎨 More themes and fonts
-- ⌨️ Keyboard shortcuts panel
+---
 
-## �📄 License
+## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+[MIT](LICENSE) © [vasoyasagar](https://github.com/vasoyasagar)
 
 ---
 
 <div align="center">
 
-**✨ Created with care by [vasoyasagar](https://github.com/vasoyasagar) ✨**
+[🌟 Star this repo](https://github.com/vasoyasagar/editor) · [🐛 Report issues](https://github.com/vasoyasagar/editor/issues) · [💡 Request features](https://github.com/vasoyasagar/editor/issues/new)
 
-[🌟 Star this repo](https://github.com/vasoyasagar/editor) | [🐛 Report Issues](https://github.com/vasoyasagar/editor/issues) | [💡 Request Features](https://github.com/vasoyasagar/editor/issues/new)
-
-*Making beautiful, fast, and accessible text editing available to everyone*
+*Beautiful, fast, accessible text editing — entirely in your browser.*
 
 </div>

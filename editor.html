@@ -3,540 +3,427 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta name="description" content="Rich Text Editor">
+    <meta name="description" content="Rich Text Editor — offline-first, multi-document, IndexedDB-backed.">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="color-scheme" content="light dark">
     <title>Online Text Editor</title>
 
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="rotate.png">
     <link rel="shortcut icon" type="image/png" href="rotate.png">
     <link rel="apple-touch-icon" href="rotate.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=SUSE+Mono:ital,wght@0,100..800;1,100..800&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&family=Lora:wght@400;600;700&family=SUSE+Mono:wght@400;700&display=swap"
         rel="stylesheet">
 
-    <style>
-        /* Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "SUSE Mono", monospace;
-        }
-
-        .suse-mono-regular {
-            font-family: "SUSE Mono", monospace;
-            font-optical-sizing: auto;
-            font-weight: 400;
-            font-style: normal;
-        }
-
-        /* Full-Screen Layout */
-        body,
-        html {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            background: #f4f4f4;
-        }
-
-        /* Header Card */
-        .header-card {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            z-index: 1000;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #333;
-        }
-
-        /* Logo Styling */
-        .header-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-img {
-            width: 32px;
-            height: 32px;
-            object-fit: contain;
-        }
-
-        /* Button Styling */
-        .icon-btn {
-            cursor: pointer;
-            font-size: 1em;
-            color: #007bff;
-            background: none;
-            border: none;
-            outline: none;
-            padding: 5px;
-            margin-left: 8px;
-        }
-
-        .delete-btn {
-            color: #dc3545;
-            /* Red color for delete */
-        }
-
-        /* Toolbar Styling */
-        .toolbar-card {
-            position: fixed;
-            top: 80px;
-            left: 10px;
-            right: 10px;
-            z-index: 999;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 10px 15px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .toolbar-btn {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-            padding: 6px 10px;
-            cursor: pointer;
-            font-size: 14px;
-            color: #495057;
-            transition: all 0.2s;
-        }
-
-        .toolbar-btn:hover {
-            background: #e9ecef;
-            border-color: #adb5bd;
-        }
-
-        .toolbar-btn.active {
-            background: #007bff;
-            color: white;
-            border-color: #007bff;
-        }
-
-        .toolbar-separator {
-            width: 1px;
-            height: 25px;
-            background: #dee2e6;
-            margin: 0 5px;
-        }
-
-
-
-        .toolbar-status {
-            margin-left: auto;
-            display: flex;
-            gap: 15px;
-            font-size: 12px;
-            color: #6c757d;
-            align-items: center;
-        }
-
-        /* Input for Editable Header */
-        .header-input {
-            font-size: 1.2em;
-            font-weight: bold;
-            border: none;
-            outline: none;
-            background: transparent;
-            width: 100%;
-        }
-
-        /* Textarea Container */
-        .editor-container {
-            flex: 1;
-            display: flex;
-            padding: 10px;
-            margin-top: 140px;
-        }
-
-        /* Card for Textarea */
-        .editor-card {
-            width: 100%;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            display: flex;
-        }
-
-        /* Rich Text Editor Styling */
-        .rich-editor {
-            width: 100%;
-            height: 100%;
-            border: none;
-            outline: none;
-            font-size: 1.2em;
-            padding: 15px;
-            overflow-y: auto;
-            line-height: 1.6;
-        }
-
-        .rich-editor:focus {
-            outline: none;
-        }
-
-        /* List Styling */
-        .rich-editor ol {
-            padding-left: 25px;
-            margin-left: 0;
-        }
-
-        .rich-editor ul {
-            padding-left: 25px;
-            margin-left: 0;
-        }
-
-        .rich-editor li {
-            margin-bottom: 5px;
-        }
-
-        /* Status Bar */
-        .status-bar {
-            background: #f8f9fa;
-            padding: 8px 15px;
-            font-size: 12px;
-            color: #6c757d;
-            border-top: 1px solid #dee2e6;
-            display: flex;
-            justify-content: space-between;
-            border-radius: 0 0 10px 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-    <!-- Header Card -->
-    <div class="header-card">
-        <div class="header-logo">
-            <img src="rotate.png" alt="Logo" class="logo-img">
-            <input type="text" id="headerTitle" class="header-input" value="Rich Text Editor" readonly>
+    <header class="header-card" role="banner">
+        <div class="header-left">
+            <button class="icon-btn" id="docSidebarToggle" title="Toggle documents (Ctrl+Shift+E)"
+                aria-label="Toggle documents sidebar" aria-pressed="true">📑</button>
+            <img src="rotate.png" alt="" class="logo-img" aria-hidden="true">
+            <input type="text" id="headerTitle" class="header-input" value="Rich Text Editor"
+                aria-label="Document title" readonly>
         </div>
-        <div>
-            <button class="icon-btn" id="editHeader" title="Edit Header">✏️</button>
-            <button class="icon-btn" id="saveHeader" style="display: none;" title="Save Header">💾</button>
-            <button class="icon-btn delete-btn" id="deleteHeader" title="Delete All Storage Data">🗑️</button>
+        <div class="header-actions">
+            <button class="icon-btn" id="newDoc" title="New document (Ctrl+N)"
+                aria-label="New document">➕</button>
+            <button class="icon-btn" id="openFile" title="Open file (Ctrl+O)"
+                aria-label="Open file">📂</button>
+            <button class="icon-btn" id="downloadFile" title="Download (Ctrl+S)"
+                aria-label="Download document">⬇️</button>
+            <button class="icon-btn" id="focusToggle" title="Focus mode (Ctrl+\)"
+                aria-label="Toggle focus mode">🎯</button>
+            <button class="icon-btn" id="themeToggle" title="Toggle dark mode (Ctrl+Shift+D)"
+                aria-label="Toggle dark mode">🌙</button>
+            <button class="icon-btn" id="settingsBtn" title="Settings (Ctrl+,)"
+                aria-label="Open settings">⚙️</button>
+            <button class="icon-btn" id="helpBtn" title="Keyboard shortcuts (?)"
+                aria-label="Keyboard shortcuts">❓</button>
+            <button class="icon-btn" id="editHeader" title="Edit title" aria-label="Edit title">✏️</button>
+            <button class="icon-btn" id="saveHeader" style="display: none;" title="Save title"
+                aria-label="Save title">💾</button>
+            <button class="icon-btn" id="outlineSidebarToggle" title="Toggle outline (Ctrl+Shift+L)"
+                aria-label="Toggle outline sidebar" aria-pressed="true">📋</button>
         </div>
-    </div>
+    </header>
 
-    <!-- Toolbar Card -->
-    <div class="toolbar-card">
-        <button class="toolbar-btn" id="boldBtn" title="Bold"><b>B</b></button>
-        <button class="toolbar-btn" id="italicBtn" title="Italic"><i>I</i></button>
-        <button class="toolbar-btn" id="underlineBtn" title="Underline"><u>U</u></button>
-        <button class="toolbar-btn" id="strikeBtn" title="Strikethrough"><s>S</s></button>
+    <input type="file" id="openFileInput"
+        accept=".html,.htm,.txt,.md,text/html,text/plain,text/markdown" hidden>
 
-        <div class="toolbar-separator"></div>
+    <div class="toolbar-card" role="toolbar" aria-label="Formatting toolbar">
+        <div class="toolbar-scroll">
+            <select class="toolbar-select" id="blockType" aria-label="Block type" title="Block type">
+                <option value="p">Paragraph</option>
+                <option value="h1">Heading 1</option>
+                <option value="h2">Heading 2</option>
+                <option value="h3">Heading 3</option>
+            </select>
 
-        <button class="toolbar-btn" id="leftAlign" title="Align Left">⬅️</button>
-        <button class="toolbar-btn" id="centerAlign" title="Center">⬆️</button>
-        <button class="toolbar-btn" id="rightAlign" title="Align Right">➡️</button>
+            <div class="toolbar-separator" aria-hidden="true"></div>
 
-        <div class="toolbar-separator"></div>
+            <button class="toolbar-btn" id="boldBtn" title="Bold (Ctrl+B)"
+                aria-label="Bold"><b>B</b></button>
+            <button class="toolbar-btn" id="italicBtn" title="Italic (Ctrl+I)"
+                aria-label="Italic"><i>I</i></button>
+            <button class="toolbar-btn" id="inlineCodeBtn" title="Inline code (Ctrl+E)"
+                aria-label="Inline code">&lt;/&gt;</button>
+            <button class="toolbar-btn" id="highlightBtn" title="Highlight (Ctrl+H)"
+                aria-label="Highlight">🖍️</button>
+            <button class="toolbar-btn" id="linkBtn" title="Insert link (Ctrl+K)"
+                aria-label="Insert link">🔗</button>
 
-        <button class="toolbar-btn" id="orderedList" title="Numbered List">1.</button>
-        <button class="toolbar-btn" id="unorderedList" title="Bullet List">•</button>
+            <div class="toolbar-separator" aria-hidden="true"></div>
 
-        <div class="toolbar-separator"></div>
+            <button class="toolbar-btn" id="blockquoteBtn" title="Blockquote"
+                aria-label="Blockquote">❝</button>
+            <button class="toolbar-btn" id="codeBlockBtn" title="Code block"
+                aria-label="Code block">{ }</button>
+            <button class="toolbar-btn" id="taskBtn" title="Checklist (/task)"
+                aria-label="Insert checklist">☑️</button>
+            <button class="toolbar-btn" id="tableBtn" title="Insert table (/table)"
+                aria-label="Insert table">▦</button>
 
-        <button class="toolbar-btn" id="undoBtn" title="Undo">↶</button>
-        <button class="toolbar-btn" id="redoBtn" title="Redo">↷</button>
+            <div class="toolbar-separator" aria-hidden="true"></div>
 
-        <div class="toolbar-separator"></div>
+            <button class="toolbar-btn" id="leftAlign" title="Align left"
+                aria-label="Align left">⬅️</button>
+            <button class="toolbar-btn" id="centerAlign" title="Align center"
+                aria-label="Align center">⬆️</button>
+            <button class="toolbar-btn" id="rightAlign" title="Align right"
+                aria-label="Align right">➡️</button>
 
-        <input type="color" id="textColor" title="Text Color" value="#000000"
-            style="width: 30px; height: 25px; border: none; border-radius: 3px;">
-        <input type="color" id="bgColor" title="Background Color" value="#ffffff"
-            style="width: 30px; height: 25px; border: none; border-radius: 3px;">
+            <div class="toolbar-separator" aria-hidden="true"></div>
 
-        <div class="toolbar-status">
+            <button class="toolbar-btn" id="findBtn" title="Find &amp; replace (Ctrl+F)"
+                aria-label="Find and replace">🔍</button>
+        </div>
+
+        <div class="toolbar-status" aria-live="polite">
+            <span class="save-indicator" id="saveIndicator" aria-hidden="true"></span>
             <span id="lastSaved">Auto-saved</span>
             <span id="wordCount">Words: 0 | Characters: 0</span>
+            <span id="readingTime">~0 min read</span>
+            <span id="storageSize">Size: 0 B</span>
+            <button class="quota-ring-btn" id="quotaRingBtn" title="Storage usage"
+                aria-label="Storage usage — click for details">
+                <svg class="quota-ring" viewBox="0 0 36 36" aria-hidden="true">
+                    <circle class="quota-ring-bg" cx="18" cy="18" r="15.9"></circle>
+                    <circle class="quota-ring-fg" cx="18" cy="18" r="15.9"></circle>
+                </svg>
+                <span class="quota-ring-label" id="quotaRingLabel">—</span>
+            </button>
         </div>
     </div>
 
-    <!-- Rich Text Editor -->
-    <div class="editor-container">
-        <div class="editor-card">
-            <div id="richEditor" class="rich-editor" contenteditable="true"
-                placeholder="Start typing your rich text here..."></div>
+    <!-- Workspace: docs sidebar | editor | outline sidebar -->
+    <main class="workspace">
+        <aside class="doc-sidebar" id="docSidebar" aria-label="Documents">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Documents</h2>
+                <button class="icon-btn" id="newDocSidebar" title="New document (Ctrl+N)"
+                    aria-label="New document">➕</button>
+            </div>
+            <input type="search" id="docSearch" class="field-input sidebar-search"
+                placeholder="Search documents…" aria-label="Search documents">
+            <ul class="doc-list" id="docList" role="list"></ul>
+            <div class="sidebar-empty" id="docListEmpty" hidden>No documents match.</div>
+        </aside>
+
+        <div class="editor-container">
+            <div class="editor-card">
+                <div id="richEditor" class="rich-editor" contenteditable="true" spellcheck="true"
+                    role="textbox" aria-multiline="true" aria-label="Document content"></div>
+
+                <div class="empty-state" id="emptyState" aria-hidden="true">
+                    <div class="empty-state-icon">📝</div>
+                    <h2 class="empty-state-title">Start writing</h2>
+                    <p class="empty-state-sub">Your work auto-saves to your browser. No account,
+                        no cloud.</p>
+                    <ul class="empty-state-tips">
+                        <li><kbd>Ctrl</kbd>+<kbd>N</kbd> New doc</li>
+                        <li><kbd>Ctrl</kbd>+<kbd>K</kbd> Link</li>
+                        <li><kbd>/</kbd> Slash menu</li>
+                        <li><kbd>Ctrl</kbd>+<kbd>\</kbd> Focus mode</li>
+                        <li><kbd>?</kbd> All shortcuts</li>
+                    </ul>
+                    <p class="empty-state-hint">Tip: drag &amp; drop a <code>.html</code>,
+                        <code>.txt</code> or <code>.md</code> file here. Try Markdown shortcuts:
+                        <code># </code>, <code>## </code>, <code>&gt; </code>, <code>- </code>,
+                        <code>1. </code>.</p>
+                </div>
+            </div>
+        </div>
+
+        <aside class="outline-sidebar" id="outlineSidebar" aria-label="Document outline">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Outline</h2>
+            </div>
+            <ul class="outline-list" id="outlineList" role="list"></ul>
+            <div class="sidebar-empty" id="outlineEmpty">No headings yet. Use <kbd>H1</kbd>,
+                <kbd>H2</kbd>, or <kbd>H3</kbd>.</div>
+        </aside>
+    </main>
+
+    <!-- Floating focus-mode exit -->
+    <button class="focus-exit" id="focusExit" title="Exit focus mode (Esc / Ctrl+\)"
+        aria-label="Exit focus mode">🎯 Exit focus</button>
+
+    <!-- Floating table tools -->
+    <div class="table-tools" id="tableTools" role="toolbar" aria-label="Table tools"
+        aria-hidden="true">
+        <button class="bubble-btn" data-act="row-above" title="Insert row above">⬆+R</button>
+        <button class="bubble-btn" data-act="row-below" title="Insert row below">⬇+R</button>
+        <button class="bubble-btn" data-act="col-left" title="Insert column left">⬅+C</button>
+        <button class="bubble-btn" data-act="col-right" title="Insert column right">➡+C</button>
+        <span class="toolbar-separator" aria-hidden="true"></span>
+        <button class="bubble-btn" data-act="row-del" title="Delete row">−Row</button>
+        <button class="bubble-btn" data-act="col-del" title="Delete column">−Col</button>
+        <button class="bubble-btn" data-act="del" title="Delete table">🗑️</button>
+    </div>
+
+    <!-- Floating bubble toolbar -->
+    <div class="bubble-toolbar" id="bubbleToolbar" role="toolbar" aria-label="Selection toolbar"
+        aria-hidden="true">
+        <button class="bubble-btn" data-cmd="bold" title="Bold"><b>B</b></button>
+        <button class="bubble-btn" data-cmd="italic" title="Italic"><i>I</i></button>
+        <button class="bubble-btn" data-cmd="inlineCode" title="Inline code">&lt;/&gt;</button>
+        <button class="bubble-btn" data-cmd="highlight" title="Highlight">🖍️</button>
+        <button class="bubble-btn" data-cmd="link" title="Insert link">🔗</button>
+    </div>
+
+    <!-- Slash command menu -->
+    <div class="slash-menu" id="slashMenu" role="listbox" aria-label="Slash commands"
+        aria-hidden="true"></div>
+
+    <!-- Find &amp; replace -->
+    <aside class="find-panel" id="findPanel" aria-hidden="true" aria-label="Find and replace">
+        <div class="find-row">
+            <input type="text" id="findInput" class="field-input" placeholder="Find"
+                aria-label="Find text">
+            <span class="find-count" id="findCount">0/0</span>
+            <button class="icon-btn" id="findPrev" title="Previous (Shift+Enter)"
+                aria-label="Previous match">↑</button>
+            <button class="icon-btn" id="findNext" title="Next (Enter)" aria-label="Next match">↓</button>
+            <button class="icon-btn" id="findClose" title="Close (Esc)"
+                aria-label="Close">✖️</button>
+        </div>
+        <div class="find-row">
+            <input type="text" id="replaceInput" class="field-input" placeholder="Replace with"
+                aria-label="Replace with">
+            <button class="toolbar-btn" id="replaceOne">Replace</button>
+            <button class="toolbar-btn" id="replaceAll">All</button>
+        </div>
+        <label class="find-opt">
+            <input type="checkbox" id="findCase"> Match case
+        </label>
+    </aside>
+
+    <!-- Drag &amp; drop overlay -->
+    <div class="drop-overlay" id="dropOverlay" aria-hidden="true">
+        <div class="drop-overlay-inner">
+            <div class="drop-overlay-icon">📥</div>
+            <div class="drop-overlay-text">Drop file to open as new document</div>
         </div>
     </div>
 
-    <script>
-        // Rich Text Editor Implementation
-        class RichTextEditor {
-            constructor() {
-                this.editor = document.getElementById('richEditor');
-                this.headerInput = document.getElementById('headerTitle');
-                this.editBtn = document.getElementById('editHeader');
-                this.saveBtn = document.getElementById('saveHeader');
-                this.deleteBtn = document.getElementById('deleteHeader');
-                this.wordCountEl = document.getElementById('wordCount');
-                this.lastSavedEl = document.getElementById('lastSaved');
+    <!-- Toasts -->
+    <div class="toast-container" id="toastContainer" role="status" aria-live="polite"
+        aria-atomic="false"></div>
 
-                this.init();
-            }
+    <!-- Help modal -->
+    <div class="modal-backdrop" id="helpModal" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle">
+            <div class="modal-header">
+                <h2 id="helpModalTitle">Keyboard shortcuts</h2>
+                <button class="icon-btn modal-close" id="helpClose" aria-label="Close">✖️</button>
+            </div>
+            <div class="modal-body">
+                <dl class="shortcuts">
+                    <dt><kbd>Ctrl</kbd>+<kbd>N</kbd></dt>
+                    <dd>New document</dd>
+                    <dt><kbd>Ctrl</kbd>+<kbd>O</kbd></dt>
+                    <dd>Open file</dd>
+                    <dt><kbd>Ctrl</kbd>+<kbd>S</kbd></dt>
+                    <dd>Download / Save As</dd>
+                    <dt><kbd>Ctrl</kbd>+<kbd>B</kbd></dt>
+                    <dd>Bold</dd>
+                    <dt><kbd>Ctrl</kbd>+<kbd>I</kbd></dt>
+                    <dd>Italic</dd>
+                    <dt><kbd>Ctrl</kbd>+<kbd>E</kbd></dt>
+                    <dd>Inline code</dd>
+                    <dt><kbd>Ctrl</kbd>+<kbd>H</kbd></dt>
+                    <dd>Highlight</dd>
+                    <dt><kbd>Ctrl</kbd>+<kbd>K</kbd></dt>
+                    <dd>Insert link</dd>
+                    <dt><kbd>Ctrl</kbd>+<kbd>F</kbd></dt>
+                    <dd>Find &amp; replace</dd>
+                    <dt><kbd>Ctrl</kbd>+<kbd>\</kbd></dt>
+                    <dd>Focus mode</dd>
+                    <dt><kbd>Ctrl</kbd>+<kbd>,</kbd></dt>
+                    <dd>Settings</dd>
+                    <dt><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd></dt>
+                    <dd>Toggle documents sidebar</dd>
+                    <dt><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd></dt>
+                    <dd>Toggle outline sidebar</dd>
+                    <dt><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd></dt>
+                    <dd>Toggle dark mode</dd>
+                    <dt><kbd>/</kbd></dt>
+                    <dd>Slash menu (at start of line)</dd>
+                    <dt><kbd>?</kbd></dt>
+                    <dd>Show this help</dd>
+                    <dt><kbd>Esc</kbd></dt>
+                    <dd>Close dialog / panel / focus</dd>
+                </dl>
+                <h3 class="modal-subtitle">Markdown shortcuts</h3>
+                <dl class="shortcuts">
+                    <dt><code># </code></dt>
+                    <dd>Heading 1</dd>
+                    <dt><code>## </code></dt>
+                    <dd>Heading 2</dd>
+                    <dt><code>### </code></dt>
+                    <dd>Heading 3</dd>
+                    <dt><code>&gt; </code></dt>
+                    <dd>Blockquote</dd>
+                    <dt><code>- </code> / <code>* </code></dt>
+                    <dd>Bullet list</dd>
+                    <dt><code>1. </code></dt>
+                    <dd>Numbered list</dd>
+                    <dt><code>```</code></dt>
+                    <dd>Code block</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
 
-            init() {
-                this.loadContent();
-                this.setupEventListeners();
-                this.setupToolbar();
-                this.updateWordCount();
-                this.setCursorToEnd();
-            }
+    <!-- Link dialog -->
+    <div class="modal-backdrop" id="linkModal" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="linkModalTitle">
+            <div class="modal-header">
+                <h2 id="linkModalTitle">Insert link</h2>
+                <button class="icon-btn modal-close" id="linkCloseBtn" aria-label="Close">✖️</button>
+            </div>
+            <div class="modal-body">
+                <label class="field">
+                    <span>Text</span>
+                    <input type="text" id="linkText" class="field-input" placeholder="Link text">
+                </label>
+                <label class="field">
+                    <span>URL</span>
+                    <input type="url" id="linkUrl" class="field-input"
+                        placeholder="https://example.com" required>
+                </label>
+                <label class="field-check">
+                    <input type="checkbox" id="linkNewTab" checked> Open in new tab
+                </label>
+                <div class="modal-actions">
+                    <button class="toolbar-btn" id="linkRemoveBtn" type="button">Remove</button>
+                    <button class="toolbar-btn primary" id="linkInsertBtn"
+                        type="button">Insert</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            loadContent() {
-                this.headerInput.value = localStorage.getItem('headerTitle') || 'Rich Text Editor';
-                this.editor.innerHTML = localStorage.getItem('richContent') || '';
-            }
+    <!-- Table modal -->
+    <div class="modal-backdrop" id="tableModal" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="tableModalTitle">
+            <div class="modal-header">
+                <h2 id="tableModalTitle">Insert table</h2>
+                <button class="icon-btn modal-close" id="tableCloseBtn"
+                    aria-label="Close">✖️</button>
+            </div>
+            <div class="modal-body">
+                <label class="field">
+                    <span>Rows</span>
+                    <input type="number" id="tableRows" class="field-input" min="1" max="50"
+                        value="3">
+                </label>
+                <label class="field">
+                    <span>Columns</span>
+                    <input type="number" id="tableCols" class="field-input" min="1" max="20"
+                        value="3">
+                </label>
+                <label class="field-check">
+                    <input type="checkbox" id="tableHeader" checked> Include header row
+                </label>
+                <div class="modal-actions">
+                    <button class="toolbar-btn primary" id="tableInsertBtn"
+                        type="button">Insert</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            saveContent() {
-                localStorage.setItem('richContent', this.editor.innerHTML);
-                this.lastSavedEl.textContent = 'Saved at ' + new Date().toLocaleTimeString();
-                setTimeout(() => {
-                    this.lastSavedEl.textContent = 'Auto-saved';
-                }, 2000);
-            }
+    <!-- Settings modal -->
+    <div class="modal-backdrop" id="settingsModal" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+            <div class="modal-header">
+                <h2 id="settingsModalTitle">Settings</h2>
+                <button class="icon-btn modal-close" id="settingsClose"
+                    aria-label="Close">✖️</button>
+            </div>
+            <div class="modal-body">
+                <label class="field">
+                    <span>Theme</span>
+                    <select id="settingsTheme" class="field-input">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="sepia">Sepia</option>
+                        <option value="solarized">Solarized Light</option>
+                        <option value="nord">Nord</option>
+                    </select>
+                </label>
+                <label class="field">
+                    <span>Editor font</span>
+                    <select id="settingsFont" class="field-input">
+                        <option value='"SUSE Mono", monospace'>SUSE Mono (default)</option>
+                        <option value='"Inter", system-ui, sans-serif'>Inter (sans)</option>
+                        <option value='"Lora", Georgia, serif'>Lora (serif)</option>
+                        <option value='"JetBrains Mono", monospace'>JetBrains Mono</option>
+                        <option value='Georgia, "Times New Roman", serif'>Georgia</option>
+                        <option value='system-ui, -apple-system, sans-serif'>System UI</option>
+                    </select>
+                </label>
+                <label class="field">
+                    <span>Font size: <span id="settingsFontSizeLabel">18</span> px</span>
+                    <input type="range" id="settingsFontSize" min="12" max="28" step="1"
+                        class="field-input">
+                </label>
+                <label class="field">
+                    <span>Line height: <span id="settingsLineHeightLabel">1.6</span></span>
+                    <input type="range" id="settingsLineHeight" min="1.2" max="2.2" step="0.05"
+                        class="field-input">
+                </label>
+                <label class="field-check">
+                    <input type="checkbox" id="settingsSpellcheck"> Spellcheck
+                </label>
+                <hr class="modal-divider">
+                <div class="field">
+                    <span>Storage usage</span>
+                    <div class="quota-details" id="quotaDetails">Calculating…</div>
+                </div>
+                <div class="field">
+                    <span>Documents by size</span>
+                    <ul class="doc-sizes" id="docSizes" role="list"></ul>
+                </div>
+                <hr class="modal-divider">
+                <div class="modal-actions">
+                    <button class="toolbar-btn" id="settingsResetBtn" type="button">Reset</button>
+                    <button class="icon-btn delete-btn" id="settingsWipeBtn" type="button"
+                        title="Delete ALL data and start fresh">🗑️ Wipe all data</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            setupEventListeners() {
-                // Header editing
-                this.editBtn.addEventListener('click', () => {
-                    this.headerInput.readOnly = false;
-                    this.headerInput.focus();
-                    this.headerInput.placeholder = 'Rich Text Editor';
-                    this.editBtn.style.display = 'none';
-                    this.saveBtn.style.display = 'inline';
-                });
-
-                this.saveBtn.addEventListener('click', () => {
-                    this.headerInput.readOnly = true;
-                    if (this.headerInput.value.trim()) {
-                        localStorage.setItem('headerTitle', this.headerInput.value);
-                    } else {
-                        this.headerInput.value = 'Rich Text Editor';
-                    }
-                    this.saveBtn.style.display = 'none';
-                    this.editBtn.style.display = 'inline';
-                });
-
-                // Auto-save content
-                this.editor.addEventListener('input', () => {
-                    this.saveContent();
-                    this.updateWordCount();
-                });
-
-                // Delete all data
-                this.deleteBtn.addEventListener('click', () => {
-                    if (confirm('Are you sure you want to delete all content?')) {
-                        localStorage.removeItem('headerTitle');
-                        localStorage.removeItem('richContent');
-                        this.headerInput.value = 'Rich Text Editor';
-                        this.editor.innerHTML = '';
-                        this.updateWordCount();
-                    }
-                });
-
-                // Handle paste to clean up formatting
-                this.editor.addEventListener('paste', (e) => {
-                    e.preventDefault();
-                    const text = e.clipboardData.getData('text/plain');
-                    document.execCommand('insertText', false, text);
-                });
-            }
-
-            setupToolbar() {
-                // Formatting buttons
-                document.getElementById('boldBtn').addEventListener('click', () => {
-                    document.execCommand('bold');
-                    this.updateButtonStates();
-                });
-
-                document.getElementById('italicBtn').addEventListener('click', () => {
-                    document.execCommand('italic');
-                    this.updateButtonStates();
-                });
-
-                document.getElementById('underlineBtn').addEventListener('click', () => {
-                    document.execCommand('underline');
-                    this.updateButtonStates();
-                });
-
-                document.getElementById('strikeBtn').addEventListener('click', () => {
-                    document.execCommand('strikethrough');
-                    this.updateButtonStates();
-                });
-
-                // Alignment
-                document.getElementById('leftAlign').addEventListener('click', () => {
-                    document.execCommand('justifyLeft');
-                });
-
-                document.getElementById('centerAlign').addEventListener('click', () => {
-                    document.execCommand('justifyCenter');
-                });
-
-                document.getElementById('rightAlign').addEventListener('click', () => {
-                    document.execCommand('justifyRight');
-                });
-
-                // Lists
-                document.getElementById('orderedList').addEventListener('click', () => {
-                    document.execCommand('insertOrderedList');
-                });
-
-                document.getElementById('unorderedList').addEventListener('click', () => {
-                    document.execCommand('insertUnorderedList');
-                });
-
-                // Undo/Redo
-                document.getElementById('undoBtn').addEventListener('click', () => {
-                    document.execCommand('undo');
-                });
-
-                document.getElementById('redoBtn').addEventListener('click', () => {
-                    document.execCommand('redo');
-                });
-
-                // Colors
-                document.getElementById('textColor').addEventListener('change', (e) => {
-                    document.execCommand('foreColor', false, e.target.value);
-                });
-
-                document.getElementById('bgColor').addEventListener('change', (e) => {
-                    document.execCommand('backColor', false, e.target.value);
-                });
-
-                // Update button states on selection change
-                this.editor.addEventListener('selectionchange', () => {
-                    this.updateButtonStates();
-                });
-
-                document.addEventListener('selectionchange', () => {
-                    this.updateButtonStates();
-                });
-            }
-
-            updateButtonStates() {
-                // Update toolbar button states based on current selection
-                const buttons = {
-                    'boldBtn': 'bold',
-                    'italicBtn': 'italic',
-                    'underlineBtn': 'underline',
-                    'strikeBtn': 'strikethrough'
-                };
-
-                Object.entries(buttons).forEach(([btnId, command]) => {
-                    const btn = document.getElementById(btnId);
-                    if (document.queryCommandState(command)) {
-                        btn.classList.add('active');
-                    } else {
-                        btn.classList.remove('active');
-                    }
-                });
-            }
-
-            updateWordCount() {
-                const text = this.editor.innerText || this.editor.textContent || '';
-                const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-                const characters = text.length;
-                this.wordCountEl.textContent = `Words: ${words} | Characters: ${characters}`;
-            }
-
-            setCursorToEnd() {
-                // Focus the editor first
-                this.editor.focus();
-
-                // Use setTimeout to ensure DOM is fully rendered
-                setTimeout(() => {
-                    // Create a range and selection to position cursor at the end
-                    const range = document.createRange();
-                    const selection = window.getSelection();
-
-                    // Select all content in the editor
-                    range.selectNodeContents(this.editor);
-
-                    // Collapse the range to the end (cursor at the end)
-                    range.collapse(false);
-
-                    // Clear any existing selections and set the new range
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-
-                    // Force scroll to bottom with multiple methods for reliability
-                    this.editor.scrollTop = this.editor.scrollHeight;
-                    this.editor.scrollIntoView({ behavior: 'instant', block: 'end' });
-
-                    // Additional scroll using scrollTo method
-                    this.editor.scrollTo({
-                        top: this.editor.scrollHeight,
-                        behavior: 'instant'
-                    });
-
-                    // Ensure the cursor position is visible
-                    if (selection.rangeCount > 0) {
-                        const rect = selection.getRangeAt(0).getBoundingClientRect();
-                        if (rect.bottom > window.innerHeight || rect.top < 0) {
-                            selection.getRangeAt(0).scrollIntoView({ behavior: 'instant', block: 'nearest' });
-                        }
-                    }
-                }, 10);
-            }
-        }
-
-        // Initialize the editor when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            new RichTextEditor();
-        });
-
-        // Add placeholder functionality
-        document.addEventListener('DOMContentLoaded', () => {
-            const editor = document.getElementById('richEditor');
-
-            function togglePlaceholder() {
-                if (editor.innerHTML.trim() === '' || editor.innerHTML === '<br>') {
-                    editor.setAttribute('data-placeholder', 'Start typing your rich text here...');
-                } else {
-                    editor.removeAttribute('data-placeholder');
-                }
-            }
-
-            editor.addEventListener('input', togglePlaceholder);
-            editor.addEventListener('focus', togglePlaceholder);
-            editor.addEventListener('blur', togglePlaceholder);
-
-            // Add CSS for placeholder
-            const style = document.createElement('style');
-            style.textContent = `
-                .rich-editor[data-placeholder]:empty:before {
-                    content: attr(data-placeholder);
-                    color: #6c757d;
-                    font-style: italic;
-                }
-            `;
-            document.head.appendChild(style);
-
-            togglePlaceholder();
-        });
-    </script>
-
+    <script type="module" src="editor.js"></script>
 </body>
 
 </html>

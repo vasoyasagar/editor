@@ -436,6 +436,8 @@ class RichTextEditor {
         this.scheduleOutline();
         this.renderSidebar();
         this.editor.focus();
+        placeCursorAtEnd(this.editor);
+        this.editor.scrollTop = this.editor.scrollHeight;
     }
 
     async flushSave() {

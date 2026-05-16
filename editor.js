@@ -215,6 +215,7 @@ const SLASH_COMMANDS = [
     { id: 'ol', icon: '1.', label: 'Numbered list', hint: '1. ', run: () => document.execCommand('insertOrderedList') },
     { id: 'task', icon: '☑️', label: 'Checklist', hint: '- [ ] ', run: (ed) => ed.insertChecklist() },
     { id: 'table', icon: '▦', label: 'Table', hint: '', run: (ed) => ed.openTableModal() },
+    { id: 'date', icon: '📅', label: "Today's date", hint: 'H1', run: (ed) => ed.insertDateHeading() },
     { id: 'hr', icon: '—', label: 'Divider', hint: '---', run: () => document.execCommand('insertHorizontalRule') }
 ];
 
@@ -1108,6 +1109,30 @@ class RichTextEditor {
             }
             this.saveContent();
         });
+    }
+
+    insertDateHeading() {
+        const d = new Date();
+        const dd = String(d.getDate()).padStart(2, '0');
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const yyyy = d.getFullYear();
+        const h1 = document.createElement('h1');
+        h1.textContent = `${dd}/${mm}/${yyyy}`;
+
+        const block = getCurrentBlock(this.editor);
+        if (block && block.textContent.trim() === '') {
+            block.replaceWith(h1);
+        } else if (block) {
+            block.parentNode.insertBefore(h1, block.nextSibling);
+        } else {
+            this.editor.appendChild(h1);
+        }
+        const after = document.createElement('p');
+        after.innerHTML = '<br>';
+        h1.parentNode.insertBefore(after, h1.nextSibling);
+        placeCursorAtStart(after);
+        this.saveContent();
+        this.scheduleOutline();
     }
 
     insertChecklist() {

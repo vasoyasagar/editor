@@ -954,43 +954,6 @@ code {
     gap: 6px;
 }
 
-/* ---------- Drag & drop overlay ---------- */
-.drop-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 2000;
-    background: rgba(0, 123, 255, 0.08);
-    backdrop-filter: blur(2px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-}
-
-.drop-overlay.is-active {
-    display: flex;
-}
-
-.drop-overlay-inner {
-    background: var(--surface);
-    border: 2px dashed var(--accent);
-    border-radius: var(--radius);
-    padding: 40px 60px;
-    text-align: center;
-    box-shadow: var(--shadow-lg);
-}
-
-.drop-overlay-icon {
-    font-size: 3rem;
-    margin-bottom: 8px;
-}
-
-.drop-overlay-text {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: var(--text);
-}
-
 /* ---------- Toasts ---------- */
 .toast-container {
     position: fixed;
@@ -1195,8 +1158,8 @@ body.is-focus .editor-card {
         display: none;
     }
 
-    /* Show sidebars only when explicitly toggled on (and not collapsed) */
-    body:not(.doc-collapsed) .doc-sidebar {
+    /* On mobile, sidebars are off by default and only show when toggled open */
+    body.is-doc-open .doc-sidebar {
         display: flex;
         position: fixed;
         top: 132px;
@@ -1206,7 +1169,7 @@ body.is-focus .editor-card {
         z-index: 1100;
     }
 
-    body:not(.outline-collapsed) .outline-sidebar {
+    body.is-outline-open .outline-sidebar {
         display: flex;
         position: fixed;
         top: 132px;

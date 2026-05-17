@@ -252,14 +252,10 @@ class RichTextEditor {
         this.lastSavedEl = document.getElementById('lastSaved');
         this.storageSizeEl = document.getElementById('storageSize');
         this.saveIndicator = document.getElementById('saveIndicator');
-        this.openBtn = document.getElementById('openFile');
-        this.downloadBtn = document.getElementById('downloadFile');
-        this.openFileInput = document.getElementById('openFileInput');
-        this.themeBtn = document.getElementById('themeToggle');
         this.helpBtn = document.getElementById('helpBtn');
         this.helpCloseBtn = document.getElementById('helpClose');
         this.helpModal = document.getElementById('helpModal');
-        this.dropOverlay = document.getElementById('dropOverlay');
+        this.themeBtn = document.getElementById('themeToggle');
 
         // Phase 2 elements
         this.blockTypeSelect = document.getElementById('blockType');
@@ -310,7 +306,6 @@ class RichTextEditor {
         this.activeTable = null;
 
         // State
-        this.currentFileHandle = null;
         this.currentDocId = null;
         this.docIndex = [];
         this.saveTimer = null;
@@ -348,7 +343,6 @@ class RichTextEditor {
         this.setupCommonListeners();
         this.setupToolbar();
         this.setupKeyboardShortcuts();
-        this.setupDragAndDrop();
         this.setupBubbleToolbar();
         this.setupSlashMenu();
         this.setupFindPanel();
@@ -358,6 +352,11 @@ class RichTextEditor {
         this.setupFocus();
         this.setupTable();
         this.setupChecklist();
+        window.addEventListener('resize', () => {
+            if (!window.matchMedia('(max-width: 980px)').matches) {
+                document.body.classList.remove('is-doc-open', 'is-outline-open');
+            }
+        });
         await this.updateStorageSize();
         this.updateQuotaRing();
     }
@@ -688,12 +687,27 @@ class RichTextEditor {
     }
 
     async toggleSidebar(which) {
+        const isNarrow = window.matchMedia('(max-width: 980px)').matches;
         if (which === 'doc') {
+            if (isNarrow) {
+                const open = !document.body.classList.contains('is-doc-open');
+                document.body.classList.toggle('is-doc-open', open);
+                if (open) document.body.classList.remove('is-outline-open');
+                this.docSidebarToggleBtn.setAttribute('aria-pressed', open ? 'true' : 'false');
+                return;
+            }
             this.prefs.docCollapsed = !this.prefs.docCollapsed;
             document.body.classList.toggle('doc-collapsed', this.prefs.docCollapsed);
             this.docSidebarToggleBtn.setAttribute(
                 'aria-pressed', this.prefs.docCollapsed ? 'false' : 'true');
         } else {
+            if (isNarrow) {
+                const open = !document.body.classList.contains('is-outline-open');
+                document.body.classList.toggle('is-outline-open', open);
+                if (open) document.body.classList.remove('is-doc-open');
+                this.outlineSidebarToggleBtn.setAttribute('aria-pressed', open ? 'true' : 'false');
+                return;
+            }
             this.prefs.outlineCollapsed = !this.prefs.outlineCollapsed;
             document.body.classList.toggle('outline-collapsed', this.prefs.outlineCollapsed);
             this.outlineSidebarToggleBtn.setAttribute(
@@ -849,13 +863,6 @@ class RichTextEditor {
             this.scheduleOutline();
         });
 
-        this.openBtn.addEventListener('click', () => this.openFile());
-        this.openFileInput.addEventListener('change', (e) => {
-            const file = e.target.files?.[0];
-            if (file) this.readFileIntoNewDoc(file);
-            e.target.value = '';
-        });
-        this.downloadBtn.addEventListener('click', () => this.downloadFile());
         this.themeBtn.addEventListener('click', async () => {
             await toggleThemeQuick();
             this.prefs.theme = document.documentElement.dataset.theme;
@@ -1882,9 +1889,7 @@ class RichTextEditor {
             }
 
             const key = e.key.toLowerCase();
-            if (key === 's') { e.preventDefault(); this.downloadFile(); }
-            else if (key === 'o') { e.preventDefault(); this.openFile(); }
-            else if (key === 'f') { e.preventDefault(); this.toggleFindPanel(true); }
+            if (key === 'f') { e.preventDefault(); this.toggleFindPanel(true); }
             else if (key === 'k') { e.preventDefault(); this.openLinkModal(); }
             else if (key === 'e') { e.preventDefault(); this.toggleInlineCode(); }
             else if (key === 'n') { e.preventDefault(); this.handleNewDoc(); }
@@ -1897,36 +1902,6 @@ class RichTextEditor {
                     e.preventDefault(); this.toggleHighlight();
                 }
             }
-        });
-    }
-
-    /* ---------- Drag & drop ---------- */
-    setupDragAndDrop() {
-        let depth = 0;
-        const isFileDrag = (e) =>
-            e.dataTransfer && Array.from(e.dataTransfer.types).includes('Files');
-
-        window.addEventListener('dragenter', (e) => {
-            if (!isFileDrag(e)) return;
-            e.preventDefault(); depth++;
-            this.dropOverlay.classList.add('is-active');
-        });
-        window.addEventListener('dragover', (e) => {
-            if (!isFileDrag(e)) return;
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'copy';
-        });
-        window.addEventListener('dragleave', (e) => {
-            if (!isFileDrag(e)) return;
-            depth = Math.max(0, depth - 1);
-            if (depth === 0) this.dropOverlay.classList.remove('is-active');
-        });
-        window.addEventListener('drop', (e) => {
-            if (!isFileDrag(e)) return;
-            e.preventDefault(); depth = 0;
-            this.dropOverlay.classList.remove('is-active');
-            const file = e.dataTransfer.files?.[0];
-            if (file) this.readFileIntoNewDoc(file);
         });
     }
 
@@ -2090,124 +2065,7 @@ class RichTextEditor {
         }
     }
 
-    /* ---------- File System Access API ---------- */
-    async openFile() {
-        if ('showOpenFilePicker' in window) {
-            try {
-                const [handle] = await window.showOpenFilePicker({
-                    types: [{
-                        description: 'Text / HTML / Markdown',
-                        accept: {
-                            'text/html': ['.html', '.htm'],
-                            'text/plain': ['.txt'],
-                            'text/markdown': ['.md']
-                        }
-                    }], multiple: false
-                });
-                const file = await handle.getFile();
-                this.currentFileHandle = handle;
-                await this.readFileIntoNewDoc(file);
-                return;
-            } catch (e) {
-                if (e?.name === 'AbortError') return;
-                console.warn('showOpenFilePicker failed, falling back:', e);
-            }
-        }
-        this.openFileInput.click();
-    }
-
-    async readFileIntoNewDoc(file) {
-        try {
-            const text = await file.text();
-            const isHtml =
-                /\.html?$/i.test(file.name) ||
-                /^\s*<(!doctype|html|body|div|p|h[1-6]|span|br|ul|ol|li)\b/i.test(text);
-            const content = isHtml
-                ? text
-                : text
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/\r?\n/g, '<br>');
-            const base = file.name.replace(/\.[^.]+$/, '') || 'Imported';
-            await this.flushSave();
-            const doc = await this.createDoc(base);
-            doc.content = content;
-            doc.updatedAt = Date.now();
-            await saveDoc(doc);
-            const entry = this.docIndex.find(d => d.id === doc.id);
-            if (entry) { entry.updatedAt = doc.updatedAt; await saveDocIndex(this.docIndex); }
-            await this.switchDoc(doc.id);
-            await this.updateStorageSize();
-            showToast('Imported: ' + file.name, 'success');
-        } catch (e) {
-            console.error(e);
-            showToast('Could not read file', 'error', 3500);
-        }
-    }
-
-    async downloadFile() {
-        const title = (this.headerInput.value || 'document').trim() || 'document';
-        const safeTitle = title.replace(/[\\/:*?"<>|]+/g, '_');
-        const filename = safeTitle + '.html';
-        const html = this.buildExportHtml(title);
-        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-
-        if ('showSaveFilePicker' in window) {
-            try {
-                const handle = await window.showSaveFilePicker({
-                    suggestedName: filename,
-                    types: [{
-                        description: 'HTML document',
-                        accept: { 'text/html': ['.html', '.htm'] }
-                    }]
-                });
-                const writable = await handle.createWritable();
-                await writable.write(blob);
-                await writable.close();
-                this.currentFileHandle = handle;
-                showToast('Saved: ' + handle.name, 'success');
-                return;
-            } catch (e) {
-                if (e?.name === 'AbortError') return;
-                console.warn('showSaveFilePicker failed, falling back:', e);
-            }
-        }
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = filename;
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        showToast('Downloaded ' + filename, 'success');
-    }
-
-    buildExportHtml(title) {
-        const safeTitle = String(title)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-        return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>${safeTitle}</title>
-<style>
-  body { font-family: "SUSE Mono", monospace; max-width: 820px; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; color: #222; }
-  h1, h2, h3 { line-height: 1.3; }
-  blockquote { border-left: 4px solid #888; margin: 1em 0; padding: 0.2em 1em; color: #555; background: #f7f7f7; }
-  pre { background: #f3f4f6; padding: 12px; border-radius: 6px; overflow-x: auto; }
-  code { background: #f3f4f6; padding: 1px 5px; border-radius: 4px; }
-  pre code { background: transparent; padding: 0; }
-  mark { background: #fff59d; padding: 0 2px; border-radius: 3px; }
-  a { color: #2563eb; }
-</style>
-</head>
-<body>
-<h1>${safeTitle}</h1>
-${this.editor.innerHTML}
-</body>
-</html>`;
-    }
+    /* ---------- Word count / empty state ---------- */
 }
 
 /* ---------- Boot ---------- */

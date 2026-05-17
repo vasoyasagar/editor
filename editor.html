@@ -34,10 +34,6 @@
         <div class="header-actions">
             <button class="icon-btn" id="newDoc" title="New document (Ctrl+N)"
                 aria-label="New document">➕</button>
-            <button class="icon-btn" id="openFile" title="Open file (Ctrl+O)"
-                aria-label="Open file">📂</button>
-            <button class="icon-btn" id="downloadFile" title="Download (Ctrl+S)"
-                aria-label="Download document">⬇️</button>
             <button class="icon-btn" id="focusToggle" title="Focus mode (Ctrl+\)"
                 aria-label="Toggle focus mode">🎯</button>
             <button class="icon-btn" id="themeToggle" title="Toggle dark mode (Ctrl+Shift+D)"
@@ -53,9 +49,6 @@
                 aria-label="Toggle outline sidebar" aria-pressed="true">📋</button>
         </div>
     </header>
-
-    <input type="file" id="openFileInput"
-        accept=".html,.htm,.txt,.md,text/html,text/plain,text/markdown" hidden>
 
     <div class="toolbar-card" role="toolbar" aria-label="Formatting toolbar">
         <div class="toolbar-scroll">
@@ -153,8 +146,7 @@
                         <li><kbd>Ctrl</kbd>+<kbd>\</kbd> Focus mode</li>
                         <li><kbd>?</kbd> All shortcuts</li>
                     </ul>
-                    <p class="empty-state-hint">Tip: drag &amp; drop a <code>.html</code>,
-                        <code>.txt</code> or <code>.md</code> file here. Try Markdown shortcuts:
+                    <p class="empty-state-hint">Tip: try Markdown shortcuts:
                         <code># </code>, <code>## </code>, <code>&gt; </code>, <code>- </code>,
                         <code>1. </code>.</p>
                 </div>
@@ -225,14 +217,6 @@
         </label>
     </aside>
 
-    <!-- Drag &amp; drop overlay -->
-    <div class="drop-overlay" id="dropOverlay" aria-hidden="true">
-        <div class="drop-overlay-inner">
-            <div class="drop-overlay-icon">📥</div>
-            <div class="drop-overlay-text">Drop file to open as new document</div>
-        </div>
-    </div>
-
     <!-- Toasts -->
     <div class="toast-container" id="toastContainer" role="status" aria-live="polite"
         aria-atomic="false"></div>
@@ -248,10 +232,6 @@
                 <dl class="shortcuts">
                     <dt><kbd>Ctrl</kbd>+<kbd>N</kbd></dt>
                     <dd>New document</dd>
-                    <dt><kbd>Ctrl</kbd>+<kbd>O</kbd></dt>
-                    <dd>Open file</dd>
-                    <dt><kbd>Ctrl</kbd>+<kbd>S</kbd></dt>
-                    <dd>Download / Save As</dd>
                     <dt><kbd>Ctrl</kbd>+<kbd>B</kbd></dt>
                     <dd>Bold</dd>
                     <dt><kbd>Ctrl</kbd>+<kbd>I</kbd></dt>

@@ -19,8 +19,6 @@ A modern, offline-first, multi-document rich text editor that runs entirely in y
 - **Floating bubble toolbar** when text is selected
 - **Five themes** — Light, Dark, Sepia, Solarized Light, Nord — plus per-editor font / font-size / line-height
 - **Focus mode** — hides UI chrome for distraction-free writing
-- **Drag-and-drop import** — drop a `.html`, `.txt`, or `.md` file to open it as a new document
-- **File System Access API** — true Save As / Open with the picker (with download / `<input type="file">` fallback)
 - **Storage insights** — live quota ring in the status bar and per-document size breakdown in Settings
 - **Toasts, save indicator, reading time, word/char count, ARIA labels, reduced-motion support**
 - **100% offline-capable, zero runtime dependencies** beyond a tiny IndexedDB helper loaded from a CDN
@@ -54,8 +52,6 @@ Other quick options: `npx serve`, `npx http-server`, or VS Code's *Live Server* 
 | Shortcut | Action |
 | --- | --- |
 | `Ctrl/⌘ + N` | New document |
-| `Ctrl/⌘ + O` | Open file (imports as a new document) |
-| `Ctrl/⌘ + S` | Download / Save As |
 | `Ctrl/⌘ + B` / `I` | Bold / Italic |
 | `Ctrl/⌘ + E` | Inline code |
 | `Ctrl/⌘ + H` | Highlight |
@@ -126,7 +122,6 @@ Open with `Ctrl + ,` or the ⚙️ button.
 
 - **Vanilla HTML/CSS/JS** with ES modules — no build step
 - **[`idb-keyval`](https://github.com/jakearchibald/idb-keyval)** for IndexedDB
-- **File System Access API** for native open/save dialogs (with `<input type="file">` and Blob+anchor fallbacks)
 - **`contenteditable` + `Range`/`Selection` APIs** for rich editing
 - **CSS variables** for theming and per-editor typography
 - **Google Fonts** for SUSE Mono, Inter, Lora, and JetBrains Mono

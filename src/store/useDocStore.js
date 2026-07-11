@@ -49,6 +49,10 @@ const useDocStore = create((set, get) => ({
     }
 
     const currentDoc = await loadDoc(currentId)
+    if (currentDoc) {
+      currentDoc.lastOpenedAt = Date.now()
+      await saveDoc(currentDoc)
+    }
     set({ docs: index, currentDocId: currentId, currentDoc, initialized: true })
   },
 
@@ -62,6 +66,11 @@ const useDocStore = create((set, get) => ({
 
     const doc = await loadDoc(id)
     if (!doc) return
+
+    // Track lastOpenedAt
+    doc.lastOpenedAt = Date.now()
+    await saveDoc(doc)
+
     await saveCurrentDocId(id)
     set({ currentDocId: id, currentDoc: doc, saveStatus: 'saved' })
   },
@@ -80,6 +89,7 @@ const useDocStore = create((set, get) => ({
       pinned: false,
       createdAt: now,
       updatedAt: now,
+      lastOpenedAt: now,
     }
     await saveDoc(doc)
 

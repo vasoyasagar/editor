@@ -88,7 +88,7 @@ function DocSidebar() {
                     {entry.title || 'Untitled'}
                   </div>
                 )}
-                <div className="doc-item-meta">{formatRelativeTime(entry.updatedAt)}</div>
+                <div className="doc-item-meta">Modified {formatRelativeTime(entry.updatedAt)}</div>
               </div>
               <div className="doc-item-actions" onClick={(e) => e.stopPropagation()}>
                 <button

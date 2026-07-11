@@ -62,6 +62,7 @@ export default function useKeyboardShortcuts() {
       const key = e.key.toLowerCase()
       if (key === 'n') { e.preventDefault(); createDoc(); return }
       if (key === 'f') { e.preventDefault(); toggleFindPanel(true); return }
+      if (key === 'k') { e.preventDefault(); openModal('link'); return }
       if (key === ',') { e.preventDefault(); openModal('settings'); return }
       if (key === '\\' || e.code === 'Backslash') { e.preventDefault(); toggleFocusMode(); return }
     }

@@ -20,6 +20,7 @@ import './Toolbar.css'
 function Toolbar() {
   const { getInstance, loading } = useEditorCtx()
   const toggleFindPanel = useUIStore((s) => s.toggleFindPanel)
+  const openModal = useUIStore((s) => s.openModal)
 
   const call = useCallback((command, payload) => {
     if (loading) return
@@ -64,6 +65,9 @@ function Toolbar() {
         <button className="toolbar-btn" title="Inline code (Ctrl+E)" aria-label="Inline code" onClick={() => call(toggleInlineCodeCommand.key)}>
           &lt;/&gt;
         </button>
+        <button className="toolbar-btn" title="Insert link (Ctrl+K)" aria-label="Insert link" onClick={() => openModal('link')}>
+          🔗
+        </button>
 
         <div className="toolbar-separator" aria-hidden="true"></div>
 
@@ -79,7 +83,7 @@ function Toolbar() {
         <button className="toolbar-btn" title="Ordered list" aria-label="Ordered list" onClick={() => call(wrapInOrderedListCommand.key)}>
           1.
         </button>
-        <button className="toolbar-btn" title="Insert table" aria-label="Insert table" onClick={() => call(insertTableCommand.key)}>
+        <button className="toolbar-btn" title="Insert table" aria-label="Insert table" onClick={() => openModal('table')}>
           ▦
         </button>
         <button className="toolbar-btn" title="Horizontal rule" aria-label="Horizontal rule" onClick={() => call(insertHrCommand.key)}>

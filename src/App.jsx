@@ -6,10 +6,13 @@ import DocSidebar from './components/Sidebar/DocSidebar'
 import OutlineSidebar from './components/Sidebar/OutlineSidebar'
 import Editor, { MilkdownRenderer } from './components/Editor/Editor'
 import SlashMenu from './components/Editor/SlashMenu'
+import BubbleToolbar from './components/Editor/BubbleToolbar'
 import FindPanel from './components/FindReplace/FindPanel'
 import FocusExit from './components/FocusExit/FocusExit'
 import HelpModal from './components/Modals/HelpModal'
 import SettingsModal from './components/Modals/SettingsModal'
+import LinkModal from './components/Modals/LinkModal'
+import TableModal from './components/Modals/TableModal'
 import ToastContainer from './components/Toast/ToastContainer'
 import usePrefsStore from './store/usePrefsStore'
 import useUIStore from './store/useUIStore'
@@ -67,6 +70,7 @@ function AppContent() {
             <div className="editor-card" style={{ position: 'relative' }} spellCheck={spellcheck}>
               <MilkdownRenderer />
               <SlashMenu />
+              <BubbleToolbar />
             </div>
           </div>
           <OutlineSidebar />
@@ -77,6 +81,8 @@ function AppContent() {
       <FocusExit />
       <HelpModal />
       <SettingsModal />
+      <LinkModal />
+      <TableModal />
       <ToastContainer />
     </div>
   )

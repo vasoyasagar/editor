@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { showToast } from '../components/Toast/ToastContainer'
 import {
   genId,
   loadDocIndex,
@@ -185,6 +186,7 @@ const useDocStore = create((set, get) => ({
     } else {
       set({ docs: index })
     }
+    showToast('Document deleted', 'success')
   },
 
   // ---- Rename current doc title (header input) ----

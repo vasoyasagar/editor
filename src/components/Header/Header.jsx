@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import useDocStore from '../../store/useDocStore'
 import useUIStore from '../../store/useUIStore'
 import usePrefsStore from '../../store/usePrefsStore'
+import { exportCurrentDoc, importMarkdownFile } from '../../utils/fileOps'
 import './Header.css'
 
 function Header() {
@@ -63,6 +64,12 @@ function Header() {
       <div className="header-actions">
         <button className="icon-btn" onClick={() => createDoc()} title="New document (Ctrl+N)" aria-label="New document">
           ➕
+        </button>
+        <button className="icon-btn" onClick={importMarkdownFile} title="Import .md file" aria-label="Import markdown file">
+          📂
+        </button>
+        <button className="icon-btn" onClick={exportCurrentDoc} title="Export as .md" aria-label="Export as markdown">
+          💾
         </button>
         <button
           className="icon-btn"

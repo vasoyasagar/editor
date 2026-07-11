@@ -7,6 +7,7 @@ import OutlineSidebar from './components/Sidebar/OutlineSidebar'
 import Editor, { MilkdownRenderer } from './components/Editor/Editor'
 import SlashMenu from './components/Editor/SlashMenu'
 import BubbleToolbar from './components/Editor/BubbleToolbar'
+import EmptyState from './components/Editor/EmptyState'
 import FindPanel from './components/FindReplace/FindPanel'
 import FocusExit from './components/FocusExit/FocusExit'
 import HelpModal from './components/Modals/HelpModal'
@@ -28,6 +29,8 @@ function AppContent() {
   const spellcheck = usePrefsStore((s) => s.spellcheck)
   const docCollapsed = useUIStore((s) => s.docSidebarCollapsed)
   const outlineCollapsed = useUIStore((s) => s.outlineSidebarCollapsed)
+  const docMobileOpen = useUIStore((s) => s.docSidebarMobileOpen)
+  const outlineMobileOpen = useUIStore((s) => s.outlineSidebarMobileOpen)
   const focusMode = useUIStore((s) => s.focusMode)
   const currentDoc = useDocStore((s) => s.currentDoc)
   const persistCurrent = useDocStore((s) => s.persistCurrent)
@@ -56,6 +59,8 @@ function AppContent() {
   const bodyClasses = [
     docCollapsed && 'doc-collapsed',
     outlineCollapsed && 'outline-collapsed',
+    docMobileOpen && 'is-doc-open',
+    outlineMobileOpen && 'is-outline-open',
     focusMode && 'is-focus',
   ].filter(Boolean).join(' ')
 
@@ -68,6 +73,7 @@ function AppContent() {
           <DocSidebar />
           <div className="editor-container">
             <div className="editor-card" style={{ position: 'relative' }} spellCheck={spellcheck}>
+              {(!currentDoc?.content || currentDoc.content.trim() === '') && <EmptyState />}
               <MilkdownRenderer />
               <SlashMenu />
               <BubbleToolbar />
@@ -95,8 +101,18 @@ function App() {
   const initPrefs = usePrefsStore((s) => s.init)
 
   useEffect(() => {
-    initPrefs()
-    initDocs()
+    async function boot() {
+      // Run legacy migration before loading docs (non-blocking on failure)
+      try {
+        const { migrateLegacyData } = await import('./utils/migrate.js')
+        await migrateLegacyData()
+      } catch (e) {
+        console.warn('Migration skipped:', e)
+      }
+      await initPrefs()
+      await initDocs()
+    }
+    boot()
   }, [])
 
   if (!docsInitialized || !prefsInitialized) {

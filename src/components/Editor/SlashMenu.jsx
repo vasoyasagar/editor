@@ -84,11 +84,11 @@ function SlashMenu() {
       const view = ctx.get(editorViewCtx)
       const { state } = view
       const { from } = state.selection
-      const text = state.doc.textBetween(Math.max(0, from - 20), from)
+      const text = state.doc.textBetween(Math.max(0, from - 20), from, '\n', '\n')
       const slashIdx = text.lastIndexOf('/')
       if (slashIdx >= 0) {
-        const deleteFrom = from - (text.length - slashIdx)
-        view.dispatch(state.tr.delete(deleteFrom, from))
+        const charsToDelete = text.length - slashIdx
+        view.dispatch(state.tr.delete(from - charsToDelete, from))
       }
     })
 
@@ -114,8 +114,18 @@ function SlashMenu() {
     setQuery('')
   }, [loading, getInstance])
 
-  // Single persistent keydown handler using refs
+  // Single persistent keydown handler on the editor DOM element
   useEffect(() => {
+    if (loading) return
+    const editor = getInstance()
+    if (!editor) return
+
+    let dom = null
+    try {
+      editor.action((ctx) => { dom = ctx.get(editorViewCtx).dom })
+    } catch { return }
+    if (!dom) return
+
     const handleKeyDown = (e) => {
       if (!visibleRef.current) return
       const list = filteredRef.current
@@ -151,9 +161,10 @@ function SlashMenu() {
       }
     }
 
-    document.addEventListener('keydown', handleKeyDown, true)
-    return () => document.removeEventListener('keydown', handleKeyDown, true)
-  }, [runCommand])
+    // Attach directly to the editor DOM element in capture phase
+    dom.addEventListener('keydown', handleKeyDown, true)
+    return () => dom.removeEventListener('keydown', handleKeyDown, true)
+  }, [loading, runCommand])
 
   // Listen for slash trigger — re-attaches whenever loading changes
   useEffect(() => {
@@ -173,8 +184,9 @@ function SlashMenu() {
       try {
         const { state } = view
         const { from } = state.selection
-        const textBefore = state.doc.textBetween(Math.max(0, from - 20), from)
-        const match = textBefore.match(/(?:^|\s)\/([\w]*)$/)
+        // Use '\n' as block separator so "/" at start of paragraph is detected
+        const textBefore = state.doc.textBetween(Math.max(0, from - 20), from, '\n', '\n')
+        const match = textBefore.match(/(?:^|[\s\n])\/([\w]*)$/)
 
         if (match) {
           setQuery(match[1])

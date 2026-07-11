@@ -12,11 +12,13 @@ import {
 } from '../hooks/useIndexedDB'
 
 const useDocStore = create((set, get) => ({
+  // State
   docs: [],          // index: [{id, title, pinned, updatedAt}]
   currentDocId: null,
-  currentDoc: null,  // full doc: {id, title, content, pinned, createdAt, updatedAt}
+  currentDoc: null,  // full doc: {id, title, content, pinned, createdAt, updatedAt, lastOpenedAt}
   initialized: false,
   saveStatus: 'saved', // 'saved' | 'saving' | 'error'
+  _switching: false,   // true during doc switch to suppress updateContent
 
   // ---- Initialize from IndexedDB ----
   init: async () => {
@@ -72,7 +74,9 @@ const useDocStore = create((set, get) => ({
     await saveDoc(doc)
 
     await saveCurrentDocId(id)
-    set({ currentDocId: id, currentDoc: doc, saveStatus: 'saved' })
+    set({ currentDocId: id, currentDoc: doc, saveStatus: 'saved', _switching: true })
+    // Reset flag after a tick (so the editor content replacement doesn't trigger updateContent)
+    setTimeout(() => set({ _switching: false }), 100)
   },
 
   // ---- Create new doc ----
@@ -104,8 +108,8 @@ const useDocStore = create((set, get) => ({
 
   // ---- Update current doc content (in memory only, for autosave) ----
   updateContent: (content) => {
-    const { currentDoc } = get()
-    if (!currentDoc) return
+    const { currentDoc, _switching } = get()
+    if (!currentDoc || _switching) return
     set({
       currentDoc: { ...currentDoc, content, updatedAt: Date.now() },
       saveStatus: 'saving',
@@ -118,17 +122,17 @@ const useDocStore = create((set, get) => ({
     if (!currentDoc) return
 
     try {
-      const updated = { ...currentDoc, updatedAt: Date.now() }
-      await saveDoc(updated)
+      // Do NOT override updatedAt here — it's set by updateContent when user edits
+      await saveDoc(currentDoc)
 
       // Update index
       const newIndex = docs.map((d) =>
-        d.id === updated.id
-          ? { ...d, title: updated.title, updatedAt: updated.updatedAt }
+        d.id === currentDoc.id
+          ? { ...d, title: currentDoc.title, updatedAt: currentDoc.updatedAt }
           : d
       )
       await saveDocIndex(newIndex)
-      set({ currentDoc: updated, docs: newIndex, saveStatus: 'saved' })
+      set({ docs: newIndex, saveStatus: 'saved' })
     } catch (e) {
       console.error('Save failed:', e)
       set({ saveStatus: 'error' })

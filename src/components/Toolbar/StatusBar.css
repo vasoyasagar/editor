@@ -9,9 +9,40 @@
   padding: 6px 16px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: space-between;
   font-size: 12px;
   color: var(--text-muted);
+}
+
+.status-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.status-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.meta-item {
+  cursor: default;
+}
+
+.meta-title {
+  font-weight: 600;
+  color: var(--text);
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta-sep {
+  color: var(--border-strong);
 }
 
 .save-indicator {

@@ -8,7 +8,6 @@ import Editor, { MilkdownRenderer } from './components/Editor/Editor'
 import SlashMenu from './components/Editor/SlashMenu'
 import BubbleToolbar from './components/Editor/BubbleToolbar'
 import EmptyState from './components/Editor/EmptyState'
-import DocMeta from './components/Editor/DocMeta'
 import FindPanel from './components/FindReplace/FindPanel'
 import FocusExit from './components/FocusExit/FocusExit'
 import HelpModal from './components/Modals/HelpModal'
@@ -74,7 +73,6 @@ function AppContent() {
           <DocSidebar />
           <div className="editor-container">
             <div className="editor-card" style={{ position: 'relative' }} spellCheck={spellcheck}>
-              <DocMeta />
               {(!currentDoc?.content || currentDoc.content.trim() === '') && <EmptyState />}
               <MilkdownRenderer />
               <SlashMenu />

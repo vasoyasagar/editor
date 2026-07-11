@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { callCommand } from '@milkdown/kit/utils'
-import { editorViewCtx } from '@milkdown/kit/core'
+import { editorViewCtx, parserCtx } from '@milkdown/kit/core'
 import {
   wrapInHeadingCommand,
   wrapInBlockquoteCommand,
@@ -148,17 +148,24 @@ function SlashMenu() {
     cmd.id.includes(query.toLowerCase()) || cmd.label.toLowerCase().includes(query.toLowerCase())
   )
 
-  const insertText = useCallback((textFn) => {
+  const insertMarkdown = useCallback((textFn) => {
     if (loading) return
     const editor = getInstance()
     if (!editor) return
 
     editor.action((ctx) => {
       const view = ctx.get(editorViewCtx)
+      const parser = ctx.get(parserCtx)
       const { state } = view
       const { from } = state.selection
-      const text = textFn()
-      const tr = state.tr.insertText(text, from)
+      const markdown = textFn()
+
+      // Parse the markdown into ProseMirror nodes
+      const doc = parser(markdown)
+      if (!doc) return
+
+      // Insert the parsed content at cursor position
+      const tr = state.tr.replaceWith(from, from, doc.content)
       view.dispatch(tr)
       view.focus()
     })
@@ -182,16 +189,16 @@ function SlashMenu() {
       }
     })
 
-    // If it's a text command, insert text; otherwise use Milkdown command
+    // If it's a text command, parse as Markdown; otherwise use Milkdown command
     if (cmd.text) {
-      insertText(cmd.text)
+      insertMarkdown(cmd.text)
     } else {
       editor.action(callCommand(cmd.command.key, cmd.payload))
     }
 
     setVisible(false)
     setQuery('')
-  }, [loading, getInstance, insertText])
+  }, [loading, getInstance, insertMarkdown])
 
   useEffect(() => {
     if (loading) return
@@ -201,22 +208,27 @@ function SlashMenu() {
 
       if (e.key === 'ArrowDown') {
         e.preventDefault()
+        e.stopImmediatePropagation()
         setActiveIndex((i) => (i + 1) % filtered.length)
       } else if (e.key === 'ArrowUp') {
         e.preventDefault()
+        e.stopImmediatePropagation()
         setActiveIndex((i) => (i - 1 + filtered.length) % filtered.length)
       } else if (e.key === 'Enter' || e.key === 'Tab') {
         e.preventDefault()
+        e.stopImmediatePropagation()
         if (filtered[activeIndex]) runCommand(filtered[activeIndex])
       } else if (e.key === 'Escape') {
         e.preventDefault()
+        e.stopImmediatePropagation()
         setVisible(false)
         setQuery('')
       }
     }
 
-    document.addEventListener('keydown', handleKeyDown, true)
-    return () => document.removeEventListener('keydown', handleKeyDown, true)
+    // Use capture phase to intercept before ProseMirror
+    document.addEventListener('keydown', handleKeyDown, { capture: true })
+    return () => document.removeEventListener('keydown', handleKeyDown, { capture: true })
   }, [loading, visible, filtered, activeIndex, runCommand])
 
   // Listen for slash trigger in the editor

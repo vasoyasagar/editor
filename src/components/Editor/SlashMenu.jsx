@@ -40,9 +40,6 @@ const MILKDOWN_COMMANDS = [
 const TEXT_COMMANDS = [
   { id: 'date', icon: '📅', label: "Today's Date", category: 'insert', text: () => getToday() },
   { id: 'datetime', icon: '🕐', label: 'Date + Time', category: 'insert', text: () => getNow() },
-  { id: 'note', icon: 'ℹ️', label: 'Callout: Note', category: 'insert', text: () => '\n> [!NOTE]\n> Your note here\n' },
-  { id: 'warning', icon: '⚠️', label: 'Callout: Warning', category: 'insert', text: () => '\n> [!WARNING]\n> Warning message here\n' },
-  { id: 'tip', icon: '💡', label: 'Callout: Tip', category: 'insert', text: () => '\n> [!TIP]\n> Helpful tip here\n' },
   { id: 'codejs', icon: '📝', label: 'Code: JavaScript', category: 'insert', text: () => '\n```js\n\n```\n' },
   { id: 'codepy', icon: '🐍', label: 'Code: Python', category: 'insert', text: () => '\n```python\n\n```\n' },
   { id: 'codesql', icon: '🗄️', label: 'Code: SQL', category: 'insert', text: () => '\n```sql\n\n```\n' },
@@ -206,10 +203,8 @@ function SlashMenu() {
     }
 
     dom.addEventListener('input', checkSlash)
-    dom.addEventListener('keyup', checkSlash)
     return () => {
       dom.removeEventListener('input', checkSlash)
-      dom.removeEventListener('keyup', checkSlash)
     }
   }, [loading])
 

@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { callCommand } from '@milkdown/kit/utils'
 import { editorViewCtx, parserCtx } from '@milkdown/kit/core'
 import {
-  createCodeBlockCommand,
   insertHrCommand,
 } from '@milkdown/kit/preset/commonmark'
 import { useEditorCtx } from './EditorContext'
@@ -20,7 +19,6 @@ function getNow() {
 
 const MILKDOWN_COMMANDS = [
   { id: 'hr', icon: '—', label: 'Horizontal Rule', category: 'insert', command: insertHrCommand },
-  { id: 'codeblock', icon: '{}', label: 'Code Block', category: 'block', command: createCodeBlockCommand },
 ]
 
 const TEXT_COMMANDS = [

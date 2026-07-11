@@ -16,23 +16,14 @@ import './SlashMenu.css'
 
 function getToday() {
   const d = new Date()
-  const dd = String(d.getDate()).padStart(2, '0')
-  const mm = String(d.getMonth() + 1).padStart(2, '0')
-  const yyyy = d.getFullYear()
-  return `${dd}/${mm}/${yyyy}`
+  return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`
 }
 
 function getNow() {
   const d = new Date()
-  const dd = String(d.getDate()).padStart(2, '0')
-  const mm = String(d.getMonth() + 1).padStart(2, '0')
-  const yyyy = d.getFullYear()
-  const hh = String(d.getHours()).padStart(2, '0')
-  const min = String(d.getMinutes()).padStart(2, '0')
-  return `${dd}/${mm}/${yyyy} ${hh}:${min}`
+  return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
 }
 
-// Commands that use Milkdown's built-in command system
 const MILKDOWN_COMMANDS = [
   { id: 'h1', icon: 'H1', label: 'Heading 1', category: 'block', command: wrapInHeadingCommand, payload: 1 },
   { id: 'h2', icon: 'H2', label: 'Heading 2', category: 'block', command: wrapInHeadingCommand, payload: 2 },
@@ -46,92 +37,19 @@ const MILKDOWN_COMMANDS = [
   { id: 'codeblock', icon: '{}', label: 'Code Block', category: 'block', command: createCodeBlockCommand },
 ]
 
-// Commands that insert raw text
 const TEXT_COMMANDS = [
-  {
-    id: 'date',
-    icon: '📅',
-    label: "Today's Date",
-    category: 'insert',
-    text: () => getToday(),
-  },
-  {
-    id: 'datetime',
-    icon: '🕐',
-    label: 'Date + Time',
-    category: 'insert',
-    text: () => getNow(),
-  },
-  {
-    id: 'note',
-    icon: 'ℹ️',
-    label: 'Callout: Note',
-    category: 'insert',
-    text: () => '\n> [!NOTE]\n> Your note here\n\n',
-  },
-  {
-    id: 'warning',
-    icon: '⚠️',
-    label: 'Callout: Warning',
-    category: 'insert',
-    text: () => '\n> [!WARNING]\n> Warning message here\n\n',
-  },
-  {
-    id: 'tip',
-    icon: '💡',
-    label: 'Callout: Tip',
-    category: 'insert',
-    text: () => '\n> [!TIP]\n> Helpful tip here\n\n',
-  },
-  {
-    id: 'codejs',
-    icon: '📝',
-    label: 'Code: JavaScript',
-    category: 'insert',
-    text: () => '\n```js\n\n```\n\n',
-  },
-  {
-    id: 'codepy',
-    icon: '🐍',
-    label: 'Code: Python',
-    category: 'insert',
-    text: () => '\n```python\n\n```\n\n',
-  },
-  {
-    id: 'codesql',
-    icon: '🗄️',
-    label: 'Code: SQL',
-    category: 'insert',
-    text: () => '\n```sql\n\n```\n\n',
-  },
-  {
-    id: 'math',
-    icon: '∑',
-    label: 'Math Block',
-    category: 'insert',
-    text: () => '\n$$\nE = mc^2\n$$\n\n',
-  },
-  {
-    id: 'mermaid',
-    icon: '📊',
-    label: 'Mermaid Diagram',
-    category: 'insert',
-    text: () => '\n```mermaid\ngraph TD\n    A[Start] --> B[End]\n```\n\n',
-  },
-  {
-    id: 'details',
-    icon: '▶️',
-    label: 'Collapsible Section',
-    category: 'insert',
-    text: () => '\n<details>\n<summary>Click to expand</summary>\n\nHidden content here\n\n</details>\n\n',
-  },
-  {
-    id: 'footnote',
-    icon: '📌',
-    label: 'Footnote',
-    category: 'insert',
-    text: () => '[^1]\n\n[^1]: Footnote text here',
-  },
+  { id: 'date', icon: '📅', label: "Today's Date", category: 'insert', text: () => getToday() },
+  { id: 'datetime', icon: '🕐', label: 'Date + Time', category: 'insert', text: () => getNow() },
+  { id: 'note', icon: 'ℹ️', label: 'Callout: Note', category: 'insert', text: () => '\n> [!NOTE]\n> Your note here\n' },
+  { id: 'warning', icon: '⚠️', label: 'Callout: Warning', category: 'insert', text: () => '\n> [!WARNING]\n> Warning message here\n' },
+  { id: 'tip', icon: '💡', label: 'Callout: Tip', category: 'insert', text: () => '\n> [!TIP]\n> Helpful tip here\n' },
+  { id: 'codejs', icon: '📝', label: 'Code: JavaScript', category: 'insert', text: () => '\n```js\n\n```\n' },
+  { id: 'codepy', icon: '🐍', label: 'Code: Python', category: 'insert', text: () => '\n```python\n\n```\n' },
+  { id: 'codesql', icon: '🗄️', label: 'Code: SQL', category: 'insert', text: () => '\n```sql\n\n```\n' },
+  { id: 'math', icon: '∑', label: 'Math Block', category: 'insert', text: () => '\n$$\nE = mc^2\n$$\n' },
+  { id: 'mermaid', icon: '📊', label: 'Mermaid Diagram', category: 'insert', text: () => '\n```mermaid\ngraph TD\n    A[Start] --> B[End]\n```\n' },
+  { id: 'details', icon: '▶️', label: 'Collapsible Section', category: 'insert', text: () => '\n<details>\n<summary>Click to expand</summary>\n\nHidden content here\n\n</details>\n' },
+  { id: 'footnote', icon: '📌', label: 'Footnote', category: 'insert', text: () => '[^1]\n\n[^1]: Footnote text here' },
 ]
 
 const ALL_COMMANDS = [...MILKDOWN_COMMANDS, ...TEXT_COMMANDS]
@@ -143,33 +61,18 @@ function SlashMenu() {
   const [position, setPosition] = useState({ top: 0, left: 0 })
   const [activeIndex, setActiveIndex] = useState(0)
   const menuRef = useRef(null)
+  const visibleRef = useRef(false)
+  const activeIndexRef = useRef(0)
+  const filteredRef = useRef(ALL_COMMANDS)
+
+  // Keep refs in sync with state
+  visibleRef.current = visible
+  activeIndexRef.current = activeIndex
 
   const filtered = ALL_COMMANDS.filter((cmd) =>
     cmd.id.includes(query.toLowerCase()) || cmd.label.toLowerCase().includes(query.toLowerCase())
   )
-
-  const insertMarkdown = useCallback((textFn) => {
-    if (loading) return
-    const editor = getInstance()
-    if (!editor) return
-
-    editor.action((ctx) => {
-      const view = ctx.get(editorViewCtx)
-      const parser = ctx.get(parserCtx)
-      const { state } = view
-      const { from } = state.selection
-      const markdown = textFn()
-
-      // Parse the markdown into ProseMirror nodes
-      const doc = parser(markdown)
-      if (!doc) return
-
-      // Insert the parsed content at cursor position
-      const tr = state.tr.replaceWith(from, from, doc.content)
-      view.dispatch(tr)
-      view.focus()
-    })
-  }, [loading, getInstance])
+  filteredRef.current = filtered
 
   const runCommand = useCallback((cmd) => {
     if (loading) return
@@ -191,47 +94,68 @@ function SlashMenu() {
 
     // If it's a text command, parse as Markdown; otherwise use Milkdown command
     if (cmd.text) {
-      insertMarkdown(cmd.text)
+      editor.action((ctx) => {
+        const view = ctx.get(editorViewCtx)
+        const parser = ctx.get(parserCtx)
+        const { state } = view
+        const { from } = state.selection
+        const markdown = cmd.text()
+        const doc = parser(markdown)
+        if (doc) {
+          view.dispatch(state.tr.replaceWith(from, from, doc.content))
+        }
+        view.focus()
+      })
     } else {
       editor.action(callCommand(cmd.command.key, cmd.payload))
     }
 
     setVisible(false)
     setQuery('')
-  }, [loading, getInstance, insertMarkdown])
+  }, [loading, getInstance])
 
+  // Single persistent keydown handler using refs
   useEffect(() => {
-    if (loading) return
-
     const handleKeyDown = (e) => {
-      if (!visible) return
+      if (!visibleRef.current) return
+      const list = filteredRef.current
 
       if (e.key === 'ArrowDown') {
         e.preventDefault()
+        e.stopPropagation()
         e.stopImmediatePropagation()
-        setActiveIndex((i) => (i + 1) % filtered.length)
-      } else if (e.key === 'ArrowUp') {
+        setActiveIndex((i) => (i + 1) % list.length)
+        return
+      }
+      if (e.key === 'ArrowUp') {
         e.preventDefault()
+        e.stopPropagation()
         e.stopImmediatePropagation()
-        setActiveIndex((i) => (i - 1 + filtered.length) % filtered.length)
-      } else if (e.key === 'Enter' || e.key === 'Tab') {
+        setActiveIndex((i) => (i - 1 + list.length) % list.length)
+        return
+      }
+      if (e.key === 'Enter' || e.key === 'Tab') {
         e.preventDefault()
+        e.stopPropagation()
         e.stopImmediatePropagation()
-        if (filtered[activeIndex]) runCommand(filtered[activeIndex])
-      } else if (e.key === 'Escape') {
+        const cmd = list[activeIndexRef.current]
+        if (cmd) runCommand(cmd)
+        return
+      }
+      if (e.key === 'Escape') {
         e.preventDefault()
+        e.stopPropagation()
         e.stopImmediatePropagation()
         setVisible(false)
         setQuery('')
       }
     }
 
-    // Use capture phase to intercept before ProseMirror
-    document.addEventListener('keydown', handleKeyDown, { capture: true })
-    return () => document.removeEventListener('keydown', handleKeyDown, { capture: true })
-  }, [loading, visible, filtered, activeIndex, runCommand])
+    document.addEventListener('keydown', handleKeyDown, true)
+    return () => document.removeEventListener('keydown', handleKeyDown, true)
+  }, [runCommand])
 
-  // Listen for slash trigger in the editor
+  // Listen for slash trigger — re-attaches whenever loading changes
   useEffect(() => {
     if (loading) return
     const editor = getInstance()
@@ -239,48 +163,43 @@ function SlashMenu() {
 
     let view = null
     try {
-      editor.action((ctx) => {
-        view = ctx.get(editorViewCtx)
-      })
+      editor.action((ctx) => { view = ctx.get(editorViewCtx) })
     } catch { return }
     if (!view) return
 
     const dom = view.dom
 
-    const handleInput = () => {
-      const { state } = view
-      const { from } = state.selection
-      const textBefore = state.doc.textBetween(Math.max(0, from - 20), from)
-      const match = textBefore.match(/(?:^|\s)\/([\w]*)$/)
+    const checkSlash = () => {
+      try {
+        const { state } = view
+        const { from } = state.selection
+        const textBefore = state.doc.textBetween(Math.max(0, from - 20), from)
+        const match = textBefore.match(/(?:^|\s)\/([\w]*)$/)
 
-      if (match) {
-        setQuery(match[1])
-        setActiveIndex(0)
-
-        // Position the menu near cursor
-        const coords = view.coordsAtPos(from)
-        const editorRect = dom.closest('.editor-card')?.getBoundingClientRect() || dom.getBoundingClientRect()
-        setPosition({
-          top: coords.bottom - editorRect.top + 8,
-          left: coords.left - editorRect.left,
-        })
-        setVisible(true)
-      } else {
-        if (visible) {
+        if (match) {
+          setQuery(match[1])
+          setActiveIndex(0)
+          const coords = view.coordsAtPos(from)
+          const editorRect = dom.closest('.editor-card')?.getBoundingClientRect() || dom.getBoundingClientRect()
+          setPosition({
+            top: coords.bottom - editorRect.top + 8,
+            left: coords.left - editorRect.left,
+          })
+          setVisible(true)
+        } else if (visibleRef.current) {
           setVisible(false)
           setQuery('')
         }
-      }
+      } catch { /* view may be destroyed */ }
     }
 
-    dom.addEventListener('input', handleInput)
-    dom.addEventListener('keyup', handleInput)
-
+    dom.addEventListener('input', checkSlash)
+    dom.addEventListener('keyup', checkSlash)
     return () => {
-      dom.removeEventListener('input', handleInput)
-      dom.removeEventListener('keyup', handleInput)
+      dom.removeEventListener('input', checkSlash)
+      dom.removeEventListener('keyup', checkSlash)
     }
-  }, [loading, visible])
+  }, [loading])
 
   // Scroll active item into view
   useEffect(() => {

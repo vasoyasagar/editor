@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import useDocStore from '../../store/useDocStore'
 import useUIStore from '../../store/useUIStore'
+import usePrefsStore from '../../store/usePrefsStore'
 import './Header.css'
 
 function Header() {
@@ -11,6 +12,8 @@ function Header() {
   const toggleOutlineSidebar = useUIStore((s) => s.toggleOutlineSidebar)
   const toggleFocusMode = useUIStore((s) => s.toggleFocusMode)
   const openModal = useUIStore((s) => s.openModal)
+  const theme = usePrefsStore((s) => s.theme)
+  const setTheme = usePrefsStore((s) => s.setTheme)
 
   const [editing, setEditing] = useState(false)
   const inputRef = useRef(null)
@@ -68,6 +71,14 @@ function Header() {
           aria-label="Toggle focus mode"
         >
           🎯
+        </button>
+        <button
+          className="icon-btn"
+          onClick={() => setTheme((theme === 'dark' || theme === 'nord') ? 'light' : 'dark')}
+          title="Toggle dark mode (Ctrl+Shift+D)"
+          aria-label="Toggle dark mode"
+        >
+          {(theme === 'dark' || theme === 'nord') ? '☀️' : '🌙'}
         </button>
         <button
           className="icon-btn"

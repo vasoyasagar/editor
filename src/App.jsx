@@ -4,7 +4,8 @@ import Toolbar from './components/Toolbar/Toolbar'
 import StatusBar from './components/Toolbar/StatusBar'
 import DocSidebar from './components/Sidebar/DocSidebar'
 import OutlineSidebar from './components/Sidebar/OutlineSidebar'
-import Editor from './components/Editor/Editor'
+import Editor, { MilkdownRenderer } from './components/Editor/Editor'
+import SlashMenu from './components/Editor/SlashMenu'
 import ToastContainer from './components/Toast/ToastContainer'
 import usePrefsStore from './store/usePrefsStore'
 import useUIStore from './store/useUIStore'
@@ -27,18 +28,21 @@ function App() {
 
   return (
     <div className={`app ${bodyClasses}`}>
-      <Header />
-      <Toolbar />
-      <main className="workspace">
-        <DocSidebar />
-        <div className="editor-container">
-          <div className="editor-card">
-            <Editor />
+      <Editor>
+        <Header />
+        <Toolbar />
+        <main className="workspace">
+          <DocSidebar />
+          <div className="editor-container">
+            <div className="editor-card" style={{ position: 'relative' }}>
+              <MilkdownRenderer />
+              <SlashMenu />
+            </div>
           </div>
-        </div>
-        <OutlineSidebar />
-      </main>
-      <StatusBar />
+          <OutlineSidebar />
+        </main>
+        <StatusBar />
+      </Editor>
       <ToastContainer />
     </div>
   )

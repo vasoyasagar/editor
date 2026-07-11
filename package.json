@@ -9,6 +9,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/css": "^11.13.5",
+    "@milkdown/components": "^7.21.2",
+    "@milkdown/kit": "^7.21.2",
+    "@milkdown/plugin-history": "^7.21.2",
+    "@milkdown/plugin-listener": "^7.21.2",
+    "@milkdown/plugin-slash": "^7.21.2",
+    "@milkdown/plugin-tooltip": "^7.21.2",
+    "@milkdown/plugin-trailing": "^7.21.2",
+    "@milkdown/react": "^7.21.2",
+    "@milkdown/theme-nord": "^7.21.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "zustand": "^5.0.14"

@@ -14,30 +14,6 @@ import { EditorProvider } from './EditorContext'
 import useDocStore from '../../store/useDocStore'
 import './Editor.css'
 
-const DEFAULT_CONTENT = `# Welcome to Markdown Editor
-
-Start writing in **Markdown** — everything is saved locally in your browser.
-
-## Features
-
-- [x] Bold, italic, and inline \`code\`
-- [x] Headings, blockquotes, and lists
-- [ ] Tables (GFM)
-- [ ] Task lists
-
-> This is a blockquote. Use \`>\` at the start of a line.
-
-### Code Block
-
-\`\`\`js
-console.log("Hello, Markdown!")
-\`\`\`
-
----
-
-Try the **slash menu** by typing \`/\` at the start of a line.
-`
-
 // Export command keys so Toolbar can use them
 export {
   toggleStrongCommand,
@@ -50,12 +26,13 @@ export {
 }
 
 function MilkdownEditorInner({ children }) {
-  const updateCurrentDoc = useDocStore((s) => s.updateCurrentDoc)
+  const updateContent = useDocStore((s) => s.updateContent)
   const currentDoc = useDocStore((s) => s.currentDoc)
+  const currentDocId = useDocStore((s) => s.currentDocId)
   const lastDocIdRef = useRef(null)
 
   const { get } = useEditor((root) => {
-    const content = currentDoc?.content || DEFAULT_CONTENT
+    const content = currentDoc?.content || ''
     return MilkdownEditor.make()
       .config((ctx) => {
         ctx.set(rootCtx, root)
@@ -63,7 +40,7 @@ function MilkdownEditorInner({ children }) {
         ctx.get(listenerCtx)
           .markdownUpdated((_ctx, markdown, prevMarkdown) => {
             if (markdown !== prevMarkdown) {
-              updateCurrentDoc({ content: markdown })
+              updateContent(markdown)
             }
           })
       })
@@ -85,12 +62,11 @@ function MilkdownEditorInner({ children }) {
     const editor = getInstance()
     if (!editor) return
 
-    const docId = currentDoc?.id
-    if (!docId) return
-    if (docId === lastDocIdRef.current) return
-    lastDocIdRef.current = docId
+    if (!currentDocId) return
+    if (currentDocId === lastDocIdRef.current) return
+    lastDocIdRef.current = currentDocId
 
-    const content = currentDoc?.content || DEFAULT_CONTENT
+    const content = currentDoc?.content || ''
 
     editor.action((ctx) => {
       const view = ctx.get(editorViewCtx)
@@ -100,7 +76,7 @@ function MilkdownEditorInner({ children }) {
       const { state } = view
       view.dispatch(state.tr.replaceWith(0, state.doc.content.size, doc.content))
     })
-  }, [loading, currentDoc?.id])
+  }, [loading, currentDocId])
 
   return (
     <EditorProvider value={{ getInstance, loading }}>

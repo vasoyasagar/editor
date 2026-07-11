@@ -33,6 +33,13 @@
   font-size: 13px;
 }
 
+.sidebar-empty {
+  font-size: 13px;
+  color: var(--text-muted);
+  padding: 12px;
+  text-align: center;
+}
+
 .doc-list {
   list-style: none;
   overflow-y: auto;
@@ -45,10 +52,18 @@
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: background 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
 }
 
 .doc-item:hover {
   background: var(--surface-2);
+}
+
+.doc-item:hover .doc-item-actions {
+  opacity: 1;
 }
 
 .doc-item.is-active {
@@ -60,6 +75,8 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
+  flex: 1;
 }
 
 .doc-item-title {
@@ -69,9 +86,40 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pin-icon {
+  font-size: 11px;
 }
 
 .doc-item-meta {
   font-size: 11px;
   color: var(--text-muted);
+}
+
+.doc-item-actions {
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  flex-shrink: 0;
+}
+
+.doc-action-btn {
+  font-size: 0.8em;
+  padding: 3px 5px;
+}
+
+.doc-item-rename {
+  background: var(--surface-2);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  width: 100%;
 }

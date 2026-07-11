@@ -19,6 +19,7 @@
     "@milkdown/plugin-trailing": "^7.21.2",
     "@milkdown/react": "^7.21.2",
     "@milkdown/theme-nord": "^7.21.2",
+    "idb-keyval": "^6.3.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "zustand": "^5.0.14"

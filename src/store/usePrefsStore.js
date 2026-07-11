@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { loadPrefs as loadPrefsDB, savePrefs as savePrefsDB } from '../hooks/useIndexedDB'
 
 const DEFAULT_PREFS = {
   theme: 'light',
@@ -10,19 +11,43 @@ const DEFAULT_PREFS = {
 
 const usePrefsStore = create((set, get) => ({
   ...DEFAULT_PREFS,
+  initialized: false,
 
-  setTheme: (theme) => set({ theme }),
-  setFont: (font) => set({ font }),
-  setFontSize: (fontSize) => set({ fontSize }),
-  setLineHeight: (lineHeight) => set({ lineHeight }),
-  setSpellcheck: (spellcheck) => set({ spellcheck }),
-
-  loadPrefs: (stored) => set({ ...DEFAULT_PREFS, ...stored }),
-  getPrefs: () => {
-    const { setTheme, setFont, setFontSize, setLineHeight, setSpellcheck, loadPrefs, getPrefs, resetPrefs, ...prefs } = get()
-    return prefs
+  init: async () => {
+    const stored = await loadPrefsDB()
+    set({ ...DEFAULT_PREFS, ...stored, initialized: true })
   },
-  resetPrefs: () => set(DEFAULT_PREFS),
+
+  setTheme: async (theme) => {
+    set({ theme })
+    await savePrefsDB(get().getPrefs())
+  },
+  setFont: async (font) => {
+    set({ font })
+    await savePrefsDB(get().getPrefs())
+  },
+  setFontSize: async (fontSize) => {
+    set({ fontSize })
+    await savePrefsDB(get().getPrefs())
+  },
+  setLineHeight: async (lineHeight) => {
+    set({ lineHeight })
+    await savePrefsDB(get().getPrefs())
+  },
+  setSpellcheck: async (spellcheck) => {
+    set({ spellcheck })
+    await savePrefsDB(get().getPrefs())
+  },
+
+  getPrefs: () => {
+    const { theme, font, fontSize, lineHeight, spellcheck } = get()
+    return { theme, font, fontSize, lineHeight, spellcheck }
+  },
+
+  resetPrefs: async () => {
+    set(DEFAULT_PREFS)
+    await savePrefsDB(DEFAULT_PREFS)
+  },
 }))
 
 export default usePrefsStore

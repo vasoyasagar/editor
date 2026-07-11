@@ -1,13 +1,25 @@
+import { useState, useRef } from 'react'
 import useDocStore from '../../store/useDocStore'
 import useUIStore from '../../store/useUIStore'
 import './Header.css'
 
 function Header() {
   const currentDoc = useDocStore((s) => s.currentDoc)
+  const renameDoc = useDocStore((s) => s.renameDoc)
+  const createDoc = useDocStore((s) => s.createDoc)
   const toggleDocSidebar = useUIStore((s) => s.toggleDocSidebar)
   const toggleOutlineSidebar = useUIStore((s) => s.toggleOutlineSidebar)
   const toggleFocusMode = useUIStore((s) => s.toggleFocusMode)
   const openModal = useUIStore((s) => s.openModal)
+
+  const [editing, setEditing] = useState(false)
+  const inputRef = useRef(null)
+
+  const handleSaveTitle = () => {
+    const value = inputRef.current?.value?.trim() || 'Untitled'
+    renameDoc(currentDoc.id, value)
+    setEditing(false)
+  }
 
   return (
     <header className="header-card" role="banner">
@@ -21,10 +33,32 @@ function Header() {
           📑
         </button>
         <img src={`${import.meta.env.BASE_URL}rotate.png`} alt="" className="logo-img" aria-hidden="true" />
-        <span className="header-title">{currentDoc?.title || 'Markdown Editor'}</span>
+        {editing ? (
+          <input
+            ref={inputRef}
+            className="header-title-input"
+            type="text"
+            defaultValue={currentDoc?.title || ''}
+            autoFocus
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSaveTitle()
+              if (e.key === 'Escape') setEditing(false)
+            }}
+            onBlur={handleSaveTitle}
+          />
+        ) : (
+          <span className="header-title" onDoubleClick={() => setEditing(true)}>
+            {currentDoc?.title || 'Markdown Editor'}
+          </span>
+        )}
+        {!editing && (
+          <button className="icon-btn edit-title-btn" onClick={() => setEditing(true)} title="Edit title" aria-label="Edit title">
+            ✏️
+          </button>
+        )}
       </div>
       <div className="header-actions">
-        <button className="icon-btn" title="New document (Ctrl+N)" aria-label="New document">
+        <button className="icon-btn" onClick={() => createDoc()} title="New document (Ctrl+N)" aria-label="New document">
           ➕
         </button>
         <button

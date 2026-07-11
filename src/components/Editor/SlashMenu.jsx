@@ -2,15 +2,9 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { callCommand } from '@milkdown/kit/utils'
 import { editorViewCtx, parserCtx } from '@milkdown/kit/core'
 import {
-  wrapInHeadingCommand,
-  wrapInBlockquoteCommand,
-  wrapInBulletListCommand,
-  wrapInOrderedListCommand,
   createCodeBlockCommand,
   insertHrCommand,
-  turnIntoTextCommand,
 } from '@milkdown/kit/preset/commonmark'
-import { insertTableCommand } from '@milkdown/kit/preset/gfm'
 import { useEditorCtx } from './EditorContext'
 import './SlashMenu.css'
 
@@ -25,14 +19,6 @@ function getNow() {
 }
 
 const MILKDOWN_COMMANDS = [
-  { id: 'h1', icon: 'H1', label: 'Heading 1', category: 'block', command: wrapInHeadingCommand, payload: 1 },
-  { id: 'h2', icon: 'H2', label: 'Heading 2', category: 'block', command: wrapInHeadingCommand, payload: 2 },
-  { id: 'h3', icon: 'H3', label: 'Heading 3', category: 'block', command: wrapInHeadingCommand, payload: 3 },
-  { id: 'paragraph', icon: '¶', label: 'Paragraph', category: 'block', command: turnIntoTextCommand },
-  { id: 'quote', icon: '❝', label: 'Blockquote', category: 'block', command: wrapInBlockquoteCommand },
-  { id: 'bullet', icon: '•', label: 'Bullet List', category: 'block', command: wrapInBulletListCommand },
-  { id: 'numbered', icon: '1.', label: 'Numbered List', category: 'block', command: wrapInOrderedListCommand },
-  { id: 'table', icon: '▦', label: 'Table', category: 'insert', command: insertTableCommand },
   { id: 'hr', icon: '—', label: 'Horizontal Rule', category: 'insert', command: insertHrCommand },
   { id: 'codeblock', icon: '{}', label: 'Code Block', category: 'block', command: createCodeBlockCommand },
 ]
@@ -40,13 +26,25 @@ const MILKDOWN_COMMANDS = [
 const TEXT_COMMANDS = [
   { id: 'date', icon: '📅', label: "Today's Date", category: 'insert', text: () => getToday() },
   { id: 'datetime', icon: '🕐', label: 'Date + Time', category: 'insert', text: () => getNow() },
-  { id: 'codejs', icon: '📝', label: 'Code: JavaScript', category: 'insert', text: () => '\n```js\n\n```\n' },
-  { id: 'codepy', icon: '🐍', label: 'Code: Python', category: 'insert', text: () => '\n```python\n\n```\n' },
-  { id: 'codesql', icon: '🗄️', label: 'Code: SQL', category: 'insert', text: () => '\n```sql\n\n```\n' },
-  { id: 'math', icon: '∑', label: 'Math Block', category: 'insert', text: () => '\n$$\nE = mc^2\n$$\n' },
-  { id: 'mermaid', icon: '📊', label: 'Mermaid Diagram', category: 'insert', text: () => '\n```mermaid\ngraph TD\n    A[Start] --> B[End]\n```\n' },
-  { id: 'details', icon: '▶️', label: 'Collapsible Section', category: 'insert', text: () => '\n<details>\n<summary>Click to expand</summary>\n\nHidden content here\n\n</details>\n' },
-  { id: 'footnote', icon: '📌', label: 'Footnote', category: 'insert', text: () => '[^1]\n\n[^1]: Footnote text here' },
+  { id: 'code', icon: '📝', label: 'Code Block (```)', category: 'insert', text: () => '\n```\n\n```\n' },
+  {
+    id: 'table',
+    icon: '▦',
+    label: 'Table',
+    category: 'insert',
+    text: () => {
+      const input = prompt('Table size (rows x cols):', '3x3')
+      if (!input) return null
+      const match = input.match(/(\d+)\s*[xX×,]\s*(\d+)/)
+      const rows = match ? Math.min(20, Math.max(1, parseInt(match[1]))) : 3
+      const cols = match ? Math.min(10, Math.max(1, parseInt(match[2]))) : 3
+      const header = '| ' + Array.from({ length: cols }, (_, i) => `Col ${i + 1}`).join(' | ') + ' |'
+      const sep = '| ' + Array.from({ length: cols }, () => '---').join(' | ') + ' |'
+      const row = '| ' + Array.from({ length: cols }, () => '   ').join(' | ') + ' |'
+      const bodyRows = Array.from({ length: rows }, () => row).join('\n')
+      return `\n${header}\n${sep}\n${bodyRows}\n\n`
+    },
+  },
 ]
 
 const ALL_COMMANDS = [...MILKDOWN_COMMANDS, ...TEXT_COMMANDS]
@@ -91,12 +89,13 @@ function SlashMenu() {
 
     // If it's a text command, parse as Markdown; otherwise use Milkdown command
     if (cmd.text) {
+      const markdown = cmd.text()
+      if (!markdown) { setVisible(false); setQuery(''); return }
       editor.action((ctx) => {
         const view = ctx.get(editorViewCtx)
         const parser = ctx.get(parserCtx)
         const { state } = view
         const { from } = state.selection
-        const markdown = cmd.text()
         const doc = parser(markdown)
         if (doc) {
           view.dispatch(state.tr.replaceWith(from, from, doc.content))

@@ -74,7 +74,11 @@ function MilkdownEditorInner({ children }) {
       const doc = parser(content)
       if (!doc) return
       const { state } = view
-      view.dispatch(state.tr.replaceWith(0, state.doc.content.size, doc.content))
+      const tr = state.tr.replaceWith(0, state.doc.content.size, doc.content)
+      // Place cursor at the start of the document
+      tr.setSelection(tr.selection.constructor.atStart(tr.doc))
+      view.dispatch(tr)
+      view.dom.scrollTop = 0
     })
   }, [loading, currentDocId])
 

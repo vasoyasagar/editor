@@ -1,15 +1,11 @@
 import { useEffect } from 'react'
 import Header from './components/Header/Header'
-import Toolbar from './components/Toolbar/Toolbar'
 import StatusBar from './components/Toolbar/StatusBar'
 import DocSidebar from './components/Sidebar/DocSidebar'
 import OutlineSidebar from './components/Sidebar/OutlineSidebar'
 import Editor, { MilkdownRenderer } from './components/Editor/Editor'
 import SlashMenu from './components/Editor/SlashMenu'
-import BubbleToolbar from './components/Editor/BubbleToolbar'
-import EmptyState from './components/Editor/EmptyState'
 import FindPanel from './components/FindReplace/FindPanel'
-import FocusExit from './components/FocusExit/FocusExit'
 import HelpModal from './components/Modals/HelpModal'
 import SettingsModal from './components/Modals/SettingsModal'
 import LinkModal from './components/Modals/LinkModal'
@@ -27,11 +23,9 @@ function AppContent() {
   const fontSize = usePrefsStore((s) => s.fontSize)
   const lineHeight = usePrefsStore((s) => s.lineHeight)
   const spellcheck = usePrefsStore((s) => s.spellcheck)
-  const docCollapsed = useUIStore((s) => s.docSidebarCollapsed)
   const outlineCollapsed = useUIStore((s) => s.outlineSidebarCollapsed)
   const docMobileOpen = useUIStore((s) => s.docSidebarMobileOpen)
   const outlineMobileOpen = useUIStore((s) => s.outlineSidebarMobileOpen)
-  const focusMode = useUIStore((s) => s.focusMode)
   const currentDoc = useDocStore((s) => s.currentDoc)
   const persistCurrent = useDocStore((s) => s.persistCurrent)
 
@@ -57,26 +51,21 @@ function AppContent() {
   }, 500)
 
   const bodyClasses = [
-    docCollapsed && 'doc-collapsed',
     outlineCollapsed && 'outline-collapsed',
     docMobileOpen && 'is-doc-open',
     outlineMobileOpen && 'is-outline-open',
-    focusMode && 'is-focus',
   ].filter(Boolean).join(' ')
 
   return (
     <div className={`app ${bodyClasses}`}>
       <Editor>
         <Header />
-        <Toolbar />
         <main className="workspace">
           <DocSidebar />
           <div className="editor-container">
             <div className="editor-card" style={{ position: 'relative' }} spellCheck={spellcheck}>
-              {(!currentDoc?.content || currentDoc.content.trim() === '') && <EmptyState />}
               <MilkdownRenderer />
               <SlashMenu />
-              <BubbleToolbar />
             </div>
           </div>
           <OutlineSidebar />
@@ -84,7 +73,6 @@ function AppContent() {
         <StatusBar />
         <FindPanel />
       </Editor>
-      <FocusExit />
       <HelpModal />
       <SettingsModal />
       <LinkModal />

@@ -9,9 +9,7 @@ function Header() {
   const currentDoc = useDocStore((s) => s.currentDoc)
   const renameDoc = useDocStore((s) => s.renameDoc)
   const createDoc = useDocStore((s) => s.createDoc)
-  const toggleDocSidebar = useUIStore((s) => s.toggleDocSidebar)
   const toggleOutlineSidebar = useUIStore((s) => s.toggleOutlineSidebar)
-  const toggleFocusMode = useUIStore((s) => s.toggleFocusMode)
   const openModal = useUIStore((s) => s.openModal)
   const theme = usePrefsStore((s) => s.theme)
   const setTheme = usePrefsStore((s) => s.setTheme)
@@ -28,14 +26,6 @@ function Header() {
   return (
     <header className="header-card" role="banner">
       <div className="header-left">
-        <button
-          className="icon-btn"
-          onClick={toggleDocSidebar}
-          title="Toggle documents (Ctrl+Shift+E)"
-          aria-label="Toggle documents sidebar"
-        >
-          📑
-        </button>
         <img src={`${import.meta.env.BASE_URL}rotate.png`} alt="" className="logo-img" aria-hidden="true" />
         {editing ? (
           <input
@@ -68,16 +58,8 @@ function Header() {
         <button className="icon-btn" onClick={importMarkdownFile} title="Import .md file" aria-label="Import markdown file">
           📂
         </button>
-        <button className="icon-btn" onClick={exportCurrentDoc} title="Export as .md" aria-label="Export as markdown">
+        <button className="icon-btn" onClick={exportCurrentDoc} title="Export as .md (Ctrl+S)" aria-label="Export as markdown">
           💾
-        </button>
-        <button
-          className="icon-btn"
-          onClick={toggleFocusMode}
-          title="Focus mode (Ctrl+\\)"
-          aria-label="Toggle focus mode"
-        >
-          🎯
         </button>
         <button
           className="icon-btn"

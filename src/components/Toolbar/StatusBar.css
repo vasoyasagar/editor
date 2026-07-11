@@ -32,6 +32,15 @@
   cursor: default;
 }
 
+.meta-label {
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-size: 9px;
+  letter-spacing: 0.3px;
+  margin-right: 2px;
+}
+
 .meta-title {
   font-weight: 600;
   color: var(--text);

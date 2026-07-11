@@ -79,11 +79,11 @@ function StatusBar() {
       <div className="status-right">
         <span className="meta-item meta-title" title="Document title">{currentDoc?.title || 'Untitled'}</span>
         <span className="meta-sep">·</span>
-        <span className="meta-item" title="Created">{formatDateShort(currentDoc?.createdAt)}</span>
+        <span className="meta-item" title="Created"><span className="meta-label">Created</span> {formatDateShort(currentDoc?.createdAt)}</span>
         <span className="meta-sep">·</span>
-        <span className="meta-item" title="Modified">{formatDateShort(currentDoc?.updatedAt)}</span>
+        <span className="meta-item" title="Modified"><span className="meta-label">Modified</span> {formatDateShort(currentDoc?.updatedAt)}</span>
         <span className="meta-sep">·</span>
-        <span className="meta-item" title="Opened">{formatDateShort(currentDoc?.lastOpenedAt)}</span>
+        <span className="meta-item" title="Opened"><span className="meta-label">Opened</span> {formatDateShort(currentDoc?.lastOpenedAt)}</span>
       </div>
     </div>
   )

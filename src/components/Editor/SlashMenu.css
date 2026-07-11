@@ -6,16 +6,34 @@
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-lg);
   padding: 6px;
-  min-width: 200px;
-  max-height: 300px;
+  min-width: 240px;
+  max-width: 300px;
+  max-height: 320px;
   overflow-y: auto;
+}
+
+.slash-menu-header {
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 4px 10px 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+
+.slash-menu-header kbd {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0 4px;
+  font-size: 10px;
+  font-family: "JetBrains Mono", monospace;
 }
 
 .slash-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 12px;
+  padding: 7px 10px;
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.1s ease;
@@ -27,20 +45,32 @@
 }
 
 .slash-item-icon {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--surface-3);
   border-radius: 4px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-muted);
   flex-shrink: 0;
 }
 
 .slash-item-label {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text);
+  flex: 1;
+}
+
+.slash-item-category {
+  font-size: 10px;
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }

@@ -9,7 +9,6 @@ import FindPanel from './components/FindReplace/FindPanel'
 import HelpModal from './components/Modals/HelpModal'
 import SettingsModal from './components/Modals/SettingsModal'
 import LinkModal from './components/Modals/LinkModal'
-import TableModal from './components/Modals/TableModal'
 import ToastContainer from './components/Toast/ToastContainer'
 import usePrefsStore from './store/usePrefsStore'
 import useUIStore from './store/useUIStore'
@@ -76,7 +75,6 @@ function AppContent() {
       <HelpModal />
       <SettingsModal />
       <LinkModal />
-      <TableModal />
       <ToastContainer />
     </div>
   )

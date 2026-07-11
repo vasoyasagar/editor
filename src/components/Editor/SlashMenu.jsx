@@ -14,18 +14,127 @@ import { insertTableCommand } from '@milkdown/kit/preset/gfm'
 import { useEditorCtx } from './EditorContext'
 import './SlashMenu.css'
 
-const COMMANDS = [
-  { id: 'h1', icon: 'H1', label: 'Heading 1', command: wrapInHeadingCommand, payload: 1 },
-  { id: 'h2', icon: 'H2', label: 'Heading 2', command: wrapInHeadingCommand, payload: 2 },
-  { id: 'h3', icon: 'H3', label: 'Heading 3', command: wrapInHeadingCommand, payload: 3 },
-  { id: 'p', icon: '¶', label: 'Paragraph', command: turnIntoTextCommand },
-  { id: 'quote', icon: '❝', label: 'Blockquote', command: wrapInBlockquoteCommand },
-  { id: 'code', icon: '{}', label: 'Code Block', command: createCodeBlockCommand },
-  { id: 'ul', icon: '•', label: 'Bullet List', command: wrapInBulletListCommand },
-  { id: 'ol', icon: '1.', label: 'Numbered List', command: wrapInOrderedListCommand },
-  { id: 'table', icon: '▦', label: 'Table', command: insertTableCommand },
-  { id: 'hr', icon: '—', label: 'Divider', command: insertHrCommand },
+function getToday() {
+  const d = new Date()
+  const dd = String(d.getDate()).padStart(2, '0')
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const yyyy = d.getFullYear()
+  return `${dd}/${mm}/${yyyy}`
+}
+
+function getNow() {
+  const d = new Date()
+  const dd = String(d.getDate()).padStart(2, '0')
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const yyyy = d.getFullYear()
+  const hh = String(d.getHours()).padStart(2, '0')
+  const min = String(d.getMinutes()).padStart(2, '0')
+  return `${dd}/${mm}/${yyyy} ${hh}:${min}`
+}
+
+// Commands that use Milkdown's built-in command system
+const MILKDOWN_COMMANDS = [
+  { id: 'h1', icon: 'H1', label: 'Heading 1', category: 'block', command: wrapInHeadingCommand, payload: 1 },
+  { id: 'h2', icon: 'H2', label: 'Heading 2', category: 'block', command: wrapInHeadingCommand, payload: 2 },
+  { id: 'h3', icon: 'H3', label: 'Heading 3', category: 'block', command: wrapInHeadingCommand, payload: 3 },
+  { id: 'paragraph', icon: '¶', label: 'Paragraph', category: 'block', command: turnIntoTextCommand },
+  { id: 'quote', icon: '❝', label: 'Blockquote', category: 'block', command: wrapInBlockquoteCommand },
+  { id: 'bullet', icon: '•', label: 'Bullet List', category: 'block', command: wrapInBulletListCommand },
+  { id: 'numbered', icon: '1.', label: 'Numbered List', category: 'block', command: wrapInOrderedListCommand },
+  { id: 'table', icon: '▦', label: 'Table', category: 'insert', command: insertTableCommand },
+  { id: 'hr', icon: '—', label: 'Horizontal Rule', category: 'insert', command: insertHrCommand },
+  { id: 'codeblock', icon: '{}', label: 'Code Block', category: 'block', command: createCodeBlockCommand },
 ]
+
+// Commands that insert raw text
+const TEXT_COMMANDS = [
+  {
+    id: 'date',
+    icon: '📅',
+    label: "Today's Date",
+    category: 'insert',
+    text: () => getToday(),
+  },
+  {
+    id: 'datetime',
+    icon: '🕐',
+    label: 'Date + Time',
+    category: 'insert',
+    text: () => getNow(),
+  },
+  {
+    id: 'note',
+    icon: 'ℹ️',
+    label: 'Callout: Note',
+    category: 'insert',
+    text: () => '\n> [!NOTE]\n> Your note here\n\n',
+  },
+  {
+    id: 'warning',
+    icon: '⚠️',
+    label: 'Callout: Warning',
+    category: 'insert',
+    text: () => '\n> [!WARNING]\n> Warning message here\n\n',
+  },
+  {
+    id: 'tip',
+    icon: '💡',
+    label: 'Callout: Tip',
+    category: 'insert',
+    text: () => '\n> [!TIP]\n> Helpful tip here\n\n',
+  },
+  {
+    id: 'codejs',
+    icon: '📝',
+    label: 'Code: JavaScript',
+    category: 'insert',
+    text: () => '\n```js\n\n```\n\n',
+  },
+  {
+    id: 'codepy',
+    icon: '🐍',
+    label: 'Code: Python',
+    category: 'insert',
+    text: () => '\n```python\n\n```\n\n',
+  },
+  {
+    id: 'codesql',
+    icon: '🗄️',
+    label: 'Code: SQL',
+    category: 'insert',
+    text: () => '\n```sql\n\n```\n\n',
+  },
+  {
+    id: 'math',
+    icon: '∑',
+    label: 'Math Block',
+    category: 'insert',
+    text: () => '\n$$\nE = mc^2\n$$\n\n',
+  },
+  {
+    id: 'mermaid',
+    icon: '📊',
+    label: 'Mermaid Diagram',
+    category: 'insert',
+    text: () => '\n```mermaid\ngraph TD\n    A[Start] --> B[End]\n```\n\n',
+  },
+  {
+    id: 'details',
+    icon: '▶️',
+    label: 'Collapsible Section',
+    category: 'insert',
+    text: () => '\n<details>\n<summary>Click to expand</summary>\n\nHidden content here\n\n</details>\n\n',
+  },
+  {
+    id: 'footnote',
+    icon: '📌',
+    label: 'Footnote',
+    category: 'insert',
+    text: () => '[^1]\n\n[^1]: Footnote text here',
+  },
+]
+
+const ALL_COMMANDS = [...MILKDOWN_COMMANDS, ...TEXT_COMMANDS]
 
 function SlashMenu() {
   const { getInstance, loading } = useEditorCtx()
@@ -35,9 +144,25 @@ function SlashMenu() {
   const [activeIndex, setActiveIndex] = useState(0)
   const menuRef = useRef(null)
 
-  const filtered = COMMANDS.filter((cmd) =>
+  const filtered = ALL_COMMANDS.filter((cmd) =>
     cmd.id.includes(query.toLowerCase()) || cmd.label.toLowerCase().includes(query.toLowerCase())
   )
+
+  const insertText = useCallback((textFn) => {
+    if (loading) return
+    const editor = getInstance()
+    if (!editor) return
+
+    editor.action((ctx) => {
+      const view = ctx.get(editorViewCtx)
+      const { state } = view
+      const { from } = state.selection
+      const text = textFn()
+      const tr = state.tr.insertText(text, from)
+      view.dispatch(tr)
+      view.focus()
+    })
+  }, [loading, getInstance])
 
   const runCommand = useCallback((cmd) => {
     if (loading) return
@@ -49,7 +174,6 @@ function SlashMenu() {
       const view = ctx.get(editorViewCtx)
       const { state } = view
       const { from } = state.selection
-      // Find the slash character and delete from there to cursor
       const text = state.doc.textBetween(Math.max(0, from - 20), from)
       const slashIdx = text.lastIndexOf('/')
       if (slashIdx >= 0) {
@@ -58,16 +182,19 @@ function SlashMenu() {
       }
     })
 
-    // Run the command
-    editor.action(callCommand(cmd.command.key, cmd.payload))
+    // If it's a text command, insert text; otherwise use Milkdown command
+    if (cmd.text) {
+      insertText(cmd.text)
+    } else {
+      editor.action(callCommand(cmd.command.key, cmd.payload))
+    }
+
     setVisible(false)
     setQuery('')
-  }, [loading, getInstance])
+  }, [loading, getInstance, insertText])
 
   useEffect(() => {
     if (loading) return
-    const editor = getInstance()
-    if (!editor) return
 
     const handleKeyDown = (e) => {
       if (!visible) return
@@ -143,6 +270,13 @@ function SlashMenu() {
     }
   }, [loading, visible])
 
+  // Scroll active item into view
+  useEffect(() => {
+    if (!visible || !menuRef.current) return
+    const active = menuRef.current.querySelector('.is-active')
+    if (active) active.scrollIntoView({ block: 'nearest' })
+  }, [activeIndex, visible])
+
   if (!visible || !filtered.length) return null
 
   return (
@@ -153,6 +287,9 @@ function SlashMenu() {
       role="listbox"
       aria-label="Slash commands"
     >
+      <div className="slash-menu-header">
+        Type to filter · <kbd>↑↓</kbd> navigate · <kbd>Enter</kbd> select
+      </div>
       {filtered.map((cmd, i) => (
         <div
           key={cmd.id}
@@ -167,6 +304,7 @@ function SlashMenu() {
         >
           <span className="slash-item-icon">{cmd.icon}</span>
           <span className="slash-item-label">{cmd.label}</span>
+          <span className="slash-item-category">{cmd.category}</span>
         </div>
       ))}
     </div>

@@ -19,6 +19,7 @@ const useDocStore = create((set, get) => ({
   initialized: false,
   saveStatus: 'saved', // 'saved' | 'saving' | 'error'
   _switching: false,   // true during doc switch to suppress updateContent
+  _loadedContent: null, // content at time of load, to compare against edits
 
   // ---- Initialize from IndexedDB ----
   init: async () => {
@@ -55,7 +56,7 @@ const useDocStore = create((set, get) => ({
       currentDoc.lastOpenedAt = Date.now()
       await saveDoc(currentDoc)
     }
-    set({ docs: index, currentDocId: currentId, currentDoc, initialized: true })
+    set({ docs: index, currentDocId: currentId, currentDoc, initialized: true, _loadedContent: currentDoc?.content || '' })
   },
 
   // ---- Switch document ----
@@ -74,9 +75,9 @@ const useDocStore = create((set, get) => ({
     await saveDoc(doc)
 
     await saveCurrentDocId(id)
-    set({ currentDocId: id, currentDoc: doc, saveStatus: 'saved', _switching: true })
-    // Reset flag after a tick (so the editor content replacement doesn't trigger updateContent)
-    setTimeout(() => set({ _switching: false }), 100)
+    set({ currentDocId: id, currentDoc: doc, saveStatus: 'saved', _switching: true, _loadedContent: doc.content || '' })
+    // Reset flag after editor has fully replaced content
+    setTimeout(() => set({ _switching: false }), 600)
   },
 
   // ---- Create new doc ----
@@ -108,11 +109,14 @@ const useDocStore = create((set, get) => ({
 
   // ---- Update current doc content (in memory only, for autosave) ----
   updateContent: (content) => {
-    const { currentDoc, _switching } = get()
+    const { currentDoc, _switching, _loadedContent } = get()
     if (!currentDoc || _switching) return
+    // Only mark as modified if content actually changed from what was loaded
+    if (content === _loadedContent) return
     set({
       currentDoc: { ...currentDoc, content, updatedAt: Date.now() },
       saveStatus: 'saving',
+      _loadedContent: content, // update so next identical call is a no-op
     })
   },
 

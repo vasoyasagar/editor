@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import useDocStore from '../../store/useDocStore'
+import useUIStore from '../../store/useUIStore'
 import { formatRelativeTime } from '../../utils/formatTime'
 import './DocSidebar.css'
 
@@ -11,10 +12,16 @@ function DocSidebar() {
   const deleteDocById = useDocStore((s) => s.deleteDocById)
   const renameDoc = useDocStore((s) => s.renameDoc)
   const togglePin = useDocStore((s) => s.togglePin)
+  const closeDocSidebarMobile = useUIStore((s) => s.closeDocSidebarMobile)
 
   const [search, setSearch] = useState('')
   const [renamingId, setRenamingId] = useState(null)
   const renameInputRef = useRef(null)
+
+  const handleSwitchDoc = (id) => {
+    switchDoc(id)
+    closeDocSidebarMobile()
+  }
 
   // Sort: pinned first, then by updatedAt desc
   const sorted = [...docs].sort((a, b) => {
@@ -65,7 +72,7 @@ function DocSidebar() {
             <li
               key={entry.id}
               className={`doc-item ${entry.id === currentDocId ? 'is-active' : ''} ${entry.pinned ? 'is-pinned' : ''}`}
-              onClick={() => switchDoc(entry.id)}
+              onClick={() => handleSwitchDoc(entry.id)}
             >
               <div className="doc-item-main">
                 {renamingId === entry.id ? (

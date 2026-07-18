@@ -55,11 +55,19 @@ function AppContent() {
     outlineMobileOpen && 'is-outline-open',
   ].filter(Boolean).join(' ')
 
+  const closeDocSidebarMobile = useUIStore((s) => s.closeDocSidebarMobile)
+
   return (
     <div className={`app ${bodyClasses}`}>
       <Editor>
         <Header />
         <main className="workspace">
+          {(docMobileOpen || outlineMobileOpen) && (
+            <div className="mobile-backdrop" onClick={() => {
+              closeDocSidebarMobile()
+              if (outlineMobileOpen) useUIStore.getState().toggleOutlineSidebar()
+            }} />
+          )}
           <DocSidebar />
           <div className="editor-container">
             <div className="editor-card" style={{ position: 'relative' }} spellCheck={spellcheck}>

@@ -4,8 +4,13 @@ const useUIStore = create((set, get) => ({
   outlineSidebarCollapsed: false,
   docSidebarMobileOpen: false,
   outlineSidebarMobileOpen: false,
-  activeModal: null, // 'settings' | 'help' | 'link' | 'table' | null
+  activeModal: null,
   findPanelOpen: false,
+
+  toggleDocSidebarMobile: () => {
+    set((s) => ({ docSidebarMobileOpen: !s.docSidebarMobileOpen, outlineSidebarMobileOpen: false }))
+  },
+  closeDocSidebarMobile: () => set({ docSidebarMobileOpen: false }),
 
   toggleOutlineSidebar: () => {
     const isNarrow = window.matchMedia('(max-width: 980px)').matches

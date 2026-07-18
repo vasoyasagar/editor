@@ -9,6 +9,7 @@ function Header() {
   const currentDoc = useDocStore((s) => s.currentDoc)
   const renameDoc = useDocStore((s) => s.renameDoc)
   const createDoc = useDocStore((s) => s.createDoc)
+  const toggleDocSidebarMobile = useUIStore((s) => s.toggleDocSidebarMobile)
   const toggleOutlineSidebar = useUIStore((s) => s.toggleOutlineSidebar)
   const openModal = useUIStore((s) => s.openModal)
   const theme = usePrefsStore((s) => s.theme)
@@ -26,7 +27,15 @@ function Header() {
   return (
     <header className="header-card" role="banner">
       <div className="header-left">
-        <img src={`${import.meta.env.BASE_URL}rotate.png`} alt="" className="logo-img" aria-hidden="true" />
+        <button
+          className="icon-btn mobile-only"
+          onClick={toggleDocSidebarMobile}
+          title="Documents"
+          aria-label="Toggle documents sidebar"
+        >
+          📑
+        </button>
+        <img src={`${import.meta.env.BASE_URL}rotate.png`} alt="" className="logo-img desktop-only" aria-hidden="true" />
         {editing ? (
           <input
             ref={inputRef}
@@ -55,22 +64,22 @@ function Header() {
         <button className="icon-btn" onClick={() => createDoc()} title="New document (Ctrl+N)" aria-label="New document">
           ➕
         </button>
-        <button className="icon-btn" onClick={importMarkdownFile} title="Import .md file" aria-label="Import markdown file">
+        <button className="icon-btn desktop-only" onClick={importMarkdownFile} title="Import .md file" aria-label="Import markdown file">
           📂
         </button>
-        <button className="icon-btn" onClick={exportCurrentDoc} title="Export as .md (Ctrl+S)" aria-label="Export as markdown">
+        <button className="icon-btn desktop-only" onClick={exportCurrentDoc} title="Export as .md (Ctrl+S)" aria-label="Export as markdown">
           💾
         </button>
         <button
           className="icon-btn"
           onClick={() => setTheme((theme === 'dark' || theme === 'nord') ? 'light' : 'dark')}
-          title="Toggle dark mode (Ctrl+Shift+D)"
+          title="Toggle dark mode"
           aria-label="Toggle dark mode"
         >
           {(theme === 'dark' || theme === 'nord') ? '☀️' : '🌙'}
         </button>
         <button
-          className="icon-btn"
+          className="icon-btn desktop-only"
           onClick={() => openModal('settings')}
           title="Settings (Ctrl+,)"
           aria-label="Open settings"
@@ -78,7 +87,7 @@ function Header() {
           ⚙️
         </button>
         <button
-          className="icon-btn"
+          className="icon-btn desktop-only"
           onClick={() => openModal('help')}
           title="Keyboard shortcuts (?)"
           aria-label="Keyboard shortcuts"
@@ -88,7 +97,7 @@ function Header() {
         <button
           className="icon-btn"
           onClick={toggleOutlineSidebar}
-          title="Toggle outline (Ctrl+Shift+L)"
+          title="Toggle outline"
           aria-label="Toggle outline sidebar"
         >
           📋

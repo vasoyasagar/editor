@@ -16,6 +16,7 @@ import {
   ConditionalContents,
   ChangeCodeMirrorLanguage,
 } from '@mdxeditor/editor'
+import AIDropdown from './AIDropdown'
 
 function EditorToolbar() {
   return (
@@ -46,6 +47,8 @@ function EditorToolbar() {
                 <InsertThematicBreak />
                 <InsertCodeBlock />
                 <InsertFrontmatter />
+                <Separator />
+                <AIDropdown />
               </>
             ),
           },

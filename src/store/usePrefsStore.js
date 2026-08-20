@@ -7,6 +7,7 @@ const DEFAULT_PREFS = {
   fontSize: 16,
   lineHeight: 1.6,
   spellcheck: true,
+  geminiApiKey: '',
 }
 
 const usePrefsStore = create((set, get) => ({
@@ -38,10 +39,14 @@ const usePrefsStore = create((set, get) => ({
     set({ spellcheck })
     await savePrefsDB(get().getPrefs())
   },
+  setGeminiApiKey: async (geminiApiKey) => {
+    set({ geminiApiKey })
+    await savePrefsDB(get().getPrefs())
+  },
 
   getPrefs: () => {
-    const { theme, font, fontSize, lineHeight, spellcheck } = get()
-    return { theme, font, fontSize, lineHeight, spellcheck }
+    const { theme, font, fontSize, lineHeight, spellcheck, geminiApiKey } = get()
+    return { theme, font, fontSize, lineHeight, spellcheck, geminiApiKey }
   },
 
   resetPrefs: async () => {

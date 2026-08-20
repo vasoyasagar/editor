@@ -1,0 +1,94 @@
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { STYLES } from '../../ai/prompts'
+import { rewriteText } from '../../ai/aiService'
+import { useEditorCtx } from './EditorContext'
+import { showToast } from '../Toast/ToastContainer'
+import './AIDropdown.css'
+
+function AIDropdown() {
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [menuPos, setMenuPos] = useState({ top: 0, left: 0 })
+  const menuRef = useRef(null)
+  const btnRef = useRef(null)
+  const { editorRef } = useEditorCtx()
+
+  useEffect(() => {
+    if (!open) return
+    const handleClick = (e) => {
+      if (!menuRef.current?.contains(e.target) && !btnRef.current?.contains(e.target)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [open])
+
+  const toggleMenu = () => {
+    if (!open && btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect()
+      setMenuPos({ top: rect.bottom + 6, left: rect.right - 220 })
+    }
+    setOpen(!open)
+  }
+
+  const handleRewrite = useCallback(async (styleId) => {
+    setOpen(false)
+
+    const selection = window.getSelection()
+    const selectedText = selection?.toString()?.trim()
+    if (!selectedText) {
+      showToast('Select some text first', 'error')
+      return
+    }
+
+    setLoading(true)
+    const style = STYLES.find((s) => s.id === styleId)
+    showToast(`✍️ ${style?.label || 'Rewriting'}...`, 'info', 10000)
+
+    try {
+      const result = await rewriteText(styleId, selectedText)
+      if (!result) { setLoading(false); return }
+      editorRef.current?.insertMarkdown(result)
+      showToast(`✅ ${style?.label} done!`, 'success')
+    } catch (e) {
+      showToast(`❌ ${e.message?.slice(0, 80)}`, 'error')
+    } finally {
+      setLoading(false)
+    }
+  }, [editorRef])
+
+  return (
+    <div className="ai-dropdown-wrap">
+      <button
+        ref={btnRef}
+        className={`ai-toolbar-btn ${loading ? 'is-loading' : ''}`}
+        onClick={toggleMenu}
+        disabled={loading}
+        title="AI Rewrite (select text first)"
+        aria-label="AI Rewrite"
+        aria-haspopup="true"
+        aria-expanded={open}
+      >
+        ✨ {loading ? '...' : 'AI'}
+      </button>
+      {open && (
+        <div ref={menuRef} className="ai-dropdown-menu" style={{ top: menuPos.top, left: menuPos.left }} role="menu">
+          {STYLES.map((style) => (
+            <button
+              key={style.id}
+              className="ai-dropdown-item"
+              role="menuitem"
+              onClick={() => handleRewrite(style.id)}
+            >
+              <span className="ai-item-icon">{style.icon}</span>
+              <span>{style.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default AIDropdown

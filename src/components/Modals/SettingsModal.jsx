@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import useUIStore from '../../store/useUIStore'
 import usePrefsStore from '../../store/usePrefsStore'
 import { wipeAllData } from '../../hooks/useIndexedDB'
@@ -29,12 +30,16 @@ function SettingsModal() {
   const fontSize = usePrefsStore((s) => s.fontSize)
   const lineHeight = usePrefsStore((s) => s.lineHeight)
   const spellcheck = usePrefsStore((s) => s.spellcheck)
+  const geminiApiKey = usePrefsStore((s) => s.geminiApiKey)
   const setTheme = usePrefsStore((s) => s.setTheme)
   const setFont = usePrefsStore((s) => s.setFont)
   const setFontSize = usePrefsStore((s) => s.setFontSize)
   const setLineHeight = usePrefsStore((s) => s.setLineHeight)
   const setSpellcheck = usePrefsStore((s) => s.setSpellcheck)
+  const setGeminiApiKey = usePrefsStore((s) => s.setGeminiApiKey)
   const resetPrefs = usePrefsStore((s) => s.resetPrefs)
+
+  const [showKey, setShowKey] = useState(false)
 
   if (activeModal !== 'settings') return null
 
@@ -95,6 +100,28 @@ function SettingsModal() {
           <label className="field-check">
             <input type="checkbox" checked={spellcheck} onChange={(e) => setSpellcheck(e.target.checked)} />
             Spellcheck
+          </label>
+
+          <hr className="modal-divider" />
+
+          <label className="field">
+            <span>✨ Gemini API Key</span>
+            <div style={{ display: 'flex', gap: 6 }}>
+              <input
+                type={showKey ? 'text' : 'password'}
+                className="field-input"
+                placeholder="Enter your Gemini API key"
+                value={geminiApiKey || ''}
+                onChange={(e) => setGeminiApiKey(e.target.value)}
+                style={{ flex: 1 }}
+              />
+              <button className="toolbar-btn" onClick={() => setShowKey(!showKey)} style={{ flexShrink: 0 }}>
+                {showKey ? '🙈' : '👁️'}
+              </button>
+            </div>
+            <small style={{ color: 'var(--text-muted)', fontSize: 11, marginTop: 4 }}>
+              Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" style={{ color: 'var(--accent)' }}>aistudio.google.com/apikey</a>
+            </small>
           </label>
 
           <hr className="modal-divider" />

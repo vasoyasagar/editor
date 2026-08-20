@@ -26,8 +26,10 @@ function HelpModal() {
             <dt><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd></dt><dd>Redo</dd>
             <dt><kbd>Ctrl</kbd>+<kbd>S</kbd></dt><dd>Export as .md</dd>
             <dt><kbd>Ctrl</kbd>+<kbd>,</kbd></dt><dd>Settings</dd>
-            <dt><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd></dt><dd>Toggle outline sidebar</dd>
+            <dt><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd></dt><dd>Toggle documents panel</dd>
             <dt><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd></dt><dd>Toggle dark mode</dd>
+            <dt><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd></dt><dd>✨ AI Grammar Fix (selection)</dd>
+            <dt>Right-click</dt><dd>✨ AI Rewrite menu (selection)</dd>
             <dt><kbd>?</kbd></dt><dd>Show this help</dd>
             <dt><kbd>Esc</kbd></dt><dd>Close dialog</dd>
           </dl>

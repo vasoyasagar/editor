@@ -3,6 +3,7 @@ import Header from './components/Header/Header'
 import StatusBar from './components/Toolbar/StatusBar'
 import DocSidebar from './components/Sidebar/DocSidebar'
 import { EditorWrapper, EditorRenderer } from './components/Editor/Editor'
+import AIContextMenu from './components/Editor/AIContextMenu'
 import HelpModal from './components/Modals/HelpModal'
 import SettingsModal from './components/Modals/SettingsModal'
 import ToastContainer from './components/Toast/ToastContainer'
@@ -11,6 +12,13 @@ import useUIStore from './store/useUIStore'
 import useDocStore from './store/useDocStore'
 import useAutosave from './hooks/useAutosave'
 import useKeyboardShortcuts from './hooks/useKeyboardShortcuts'
+import { useEditorCtx } from './components/Editor/EditorContext'
+
+function KeyboardShortcutsProvider() {
+  const { editorRef } = useEditorCtx()
+  useKeyboardShortcuts(editorRef)
+  return null
+}
 
 function AppContent() {
   const theme = usePrefsStore((s) => s.theme)
@@ -22,9 +30,6 @@ function AppContent() {
   const docMobileOpen = useUIStore((s) => s.docSidebarMobileOpen)
   const currentDoc = useDocStore((s) => s.currentDoc)
   const persistCurrent = useDocStore((s) => s.persistCurrent)
-
-  // Keyboard shortcuts
-  useKeyboardShortcuts()
 
   // Apply theme
   useEffect(() => {
@@ -54,6 +59,7 @@ function AppContent() {
   return (
     <div className={`app ${bodyClasses}`}>
       <EditorWrapper>
+        <KeyboardShortcutsProvider />
         <Header />
         <main className="workspace">
           {docMobileOpen && (
@@ -67,6 +73,7 @@ function AppContent() {
           </div>
         </main>
         <StatusBar />
+        <AIContextMenu />
       </EditorWrapper>
       <HelpModal />
       <SettingsModal />

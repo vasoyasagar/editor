@@ -3,8 +3,10 @@ import useUIStore from '../store/useUIStore'
 import usePrefsStore from '../store/usePrefsStore'
 import useDocStore from '../store/useDocStore'
 import { exportCurrentDoc } from '../utils/fileOps'
+import { rewriteText } from '../ai/aiService'
+import { showToast } from '../components/Toast/ToastContainer'
 
-export default function useKeyboardShortcuts() {
+export default function useKeyboardShortcuts(editorRef) {
   const toggleDocSidebar = useUIStore((s) => s.toggleDocSidebar)
   const activeModal = useUIStore((s) => s.activeModal)
   const closeModal = useUIStore((s) => s.closeModal)
@@ -39,6 +41,19 @@ export default function useKeyboardShortcuts() {
       if (e.shiftKey) {
         const k = e.key.toLowerCase()
         if (k === 'e') { e.preventDefault(); toggleDocSidebar(); return }
+        if (k === 'g') {
+          e.preventDefault()
+          const selected = window.getSelection()?.toString()?.trim()
+          if (!selected) { showToast('Select some text first', 'error'); return }
+          showToast('✍️ Fixing grammar...', 'info', 10000)
+          rewriteText('grammar', selected).then((result) => {
+            if (result) {
+              editorRef?.current?.insertMarkdown(result)
+              showToast('✅ Grammar fixed!', 'success')
+            }
+          }).catch((err) => showToast(`❌ ${err.message?.slice(0, 80)}`, 'error'))
+          return
+        }
         if (k === 'd') {
           e.preventDefault()
           const next = (theme === 'dark' || theme === 'nord') ? 'light' : 'dark'

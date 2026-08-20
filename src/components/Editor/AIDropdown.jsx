@@ -3,12 +3,14 @@ import { STYLES } from '../../ai/prompts'
 import { rewriteText } from '../../ai/aiService'
 import { useEditorCtx } from './EditorContext'
 import { showToast } from '../Toast/ToastContainer'
+import AIAnswerModal from './AIAnswerModal'
 import './AIDropdown.css'
 
 function AIDropdown() {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [menuPos, setMenuPos] = useState({ top: 0, left: 0 })
+  const [answerModal, setAnswerModal] = useState({ open: false, styleId: null, source: '' })
   const menuRef = useRef(null)
   const btnRef = useRef(null)
   const { editorRef } = useEditorCtx()
@@ -39,6 +41,11 @@ function AIDropdown() {
     const selectedText = selection?.toString()?.trim()
     if (!selectedText) {
       showToast('Select some text first', 'error')
+      return
+    }
+
+    if (styleId === 'answer' || styleId === 'reply') {
+      setAnswerModal({ open: true, styleId, source: selectedText })
       return
     }
 
@@ -87,6 +94,13 @@ function AIDropdown() {
           ))}
         </div>
       )}
+      <AIAnswerModal
+        open={answerModal.open}
+        styleId={answerModal.styleId}
+        sourceText={answerModal.source}
+        onInsert={(text) => editorRef.current?.insertMarkdown(text)}
+        onClose={() => setAnswerModal({ open: false, styleId: null, source: '' })}
+      />
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { buildPrompt } from './prompts'
+import { buildPrompt, buildAnswerPrompt } from './prompts'
 import usePrefsStore from '../store/usePrefsStore'
 import { showToast } from '../components/Toast/ToastContainer'
 
@@ -58,5 +58,20 @@ export async function rewriteText(styleId, text) {
   }
 
   const { system, user } = buildPrompt(styleId, text)
+  return callGeminiWithCascade(apiKey, system, user)
+}
+
+export async function rewriteAnswer(styleId, source, draft) {
+  const apiKey = usePrefsStore.getState().geminiApiKey
+  if (!apiKey) {
+    showToast('Set your Gemini API key in Settings first', 'error')
+    return null
+  }
+  if (!source?.trim()) {
+    showToast('Source message is required', 'error')
+    return null
+  }
+
+  const { system, user } = buildAnswerPrompt(styleId, source, draft)
   return callGeminiWithCascade(apiKey, system, user)
 }

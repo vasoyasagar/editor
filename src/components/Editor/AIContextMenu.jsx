@@ -3,12 +3,14 @@ import { STYLES } from '../../ai/prompts'
 import { rewriteText } from '../../ai/aiService'
 import { useEditorCtx } from './EditorContext'
 import { showToast } from '../Toast/ToastContainer'
+import AIAnswerModal from './AIAnswerModal'
 import './AIContextMenu.css'
 
 function AIContextMenu() {
   const [visible, setVisible] = useState(false)
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [loading, setLoading] = useState(false)
+  const [answerModal, setAnswerModal] = useState({ open: false, styleId: null, source: '' })
   const menuRef = useRef(null)
   const { editorRef } = useEditorCtx()
 
@@ -60,6 +62,11 @@ function AIContextMenu() {
       return
     }
 
+    if (styleId === 'answer' || styleId === 'reply') {
+      setAnswerModal({ open: true, styleId, source: selectedText })
+      return
+    }
+
     setLoading(true)
     const style = STYLES.find((s) => s.id === styleId)
     showToast(`✍️ ${style?.label || 'Rewriting'}...`, 'info', 10000)
@@ -76,29 +83,40 @@ function AIContextMenu() {
     }
   }, [editorRef])
 
-  if (!visible) return null
+  if (!visible && !answerModal.open) return null
 
   return (
-    <div
-      ref={menuRef}
-      className="ai-context-menu"
-      style={{ left: position.x, top: position.y }}
-      role="menu"
-    >
-      <div className="ai-context-header">✨ AI Rewrite</div>
-      {STYLES.map((style) => (
-        <button
-          key={style.id}
-          className="ai-context-item"
-          role="menuitem"
-          disabled={loading}
-          onClick={() => handleRewrite(style.id)}
+    <>
+      {visible && (
+        <div
+          ref={menuRef}
+          className="ai-context-menu"
+          style={{ left: position.x, top: position.y }}
+          role="menu"
         >
-          <span className="ai-item-icon">{style.icon}</span>
-          <span>{style.label}</span>
-        </button>
-      ))}
-    </div>
+          <div className="ai-context-header">✨ AI Rewrite</div>
+          {STYLES.map((style) => (
+            <button
+              key={style.id}
+              className="ai-context-item"
+              role="menuitem"
+              disabled={loading}
+              onClick={() => handleRewrite(style.id)}
+            >
+              <span className="ai-item-icon">{style.icon}</span>
+              <span>{style.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+      <AIAnswerModal
+        open={answerModal.open}
+        styleId={answerModal.styleId}
+        sourceText={answerModal.source}
+        onInsert={(text) => editorRef.current?.insertMarkdown(text)}
+        onClose={() => setAnswerModal({ open: false, styleId: null, source: '' })}
+      />
+    </>
   )
 }
 

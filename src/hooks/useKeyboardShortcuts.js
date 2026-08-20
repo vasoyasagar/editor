@@ -48,7 +48,8 @@ export default function useKeyboardShortcuts(editorRef) {
           showToast('✍️ Fixing grammar...', 'info', 10000)
           rewriteText('grammar', selected).then((result) => {
             if (result) {
-              editorRef?.current?.insertMarkdown(result)
+              window.getSelection()?.collapseToEnd()
+              editorRef?.current?.insertMarkdown('\n\n' + result)
               showToast('✅ Grammar fixed!', 'success')
             }
           }).catch((err) => showToast(`❌ ${err.message?.slice(0, 80)}`, 'error'))

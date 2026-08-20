@@ -56,7 +56,9 @@ function AIDropdown() {
     try {
       const result = await rewriteText(styleId, selectedText)
       if (!result) { setLoading(false); return }
-      editorRef.current?.insertMarkdown(result)
+      // Collapse selection to end, then insert on new line
+      window.getSelection()?.collapseToEnd()
+      editorRef.current?.insertMarkdown('\n\n' + result)
       showToast(`✅ ${style?.label} done!`, 'success')
     } catch (e) {
       showToast(`❌ ${e.message?.slice(0, 80)}`, 'error')
@@ -102,7 +104,10 @@ function AIDropdown() {
         open={answerModal.open}
         styleId={answerModal.styleId}
         sourceText={answerModal.source}
-        onInsert={(text) => editorRef.current?.insertMarkdown(text)}
+        onInsert={(text) => {
+          window.getSelection()?.collapseToEnd()
+          editorRef.current?.insertMarkdown('\n\n' + text)
+        }}
         onClose={() => setAnswerModal({ open: false, styleId: null, source: '' })}
       />
     </div>

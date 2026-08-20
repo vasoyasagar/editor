@@ -32,7 +32,7 @@
 .ai-dropdown-menu {
   position: fixed;
   z-index: 2000;
-  min-width: 220px;
+  min-width: 260px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -66,4 +66,16 @@
   width: 20px;
   text-align: center;
   flex-shrink: 0;
+}
+
+.ai-item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ai-item-tip {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
 }

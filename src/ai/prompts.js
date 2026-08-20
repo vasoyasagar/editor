@@ -1,12 +1,12 @@
 export const STYLES = [
-  { id: 'grammar', icon: '✏️', label: 'Fix Grammar' },
-  { id: 'professional', icon: '👔', label: 'Professional' },
-  { id: 'formal', icon: '📜', label: 'Formal' },
-  { id: 'friendly', icon: '🤝', label: 'Friendly' },
-  { id: 'funny', icon: '😄', label: 'Funny' },
-  { id: 'casual', icon: '💬', label: 'Casual' },
-  { id: 'answer', icon: '💡', label: 'Answer' },
-  { id: 'reply', icon: '↩️', label: 'Reply' },
+  { id: 'grammar', icon: '✏️', label: 'Fix Grammar', tip: 'Fix spelling, grammar & punctuation' },
+  { id: 'professional', icon: '👔', label: 'Professional', tip: 'Clear, business-appropriate tone' },
+  { id: 'formal', icon: '📜', label: 'Formal', tip: 'Polished, corporate-level language' },
+  { id: 'friendly', icon: '🤝', label: 'Friendly', tip: 'Warm and approachable tone' },
+  { id: 'funny', icon: '😄', label: 'Funny', tip: 'Witty, playful with humor' },
+  { id: 'casual', icon: '💬', label: 'Casual', tip: 'Relaxed, everyday conversational' },
+  { id: 'answer', icon: '💡', label: 'Answer', tip: 'Generate a detailed reply to selected message' },
+  { id: 'reply', icon: '↩️', label: 'Reply', tip: 'Generate a short, quick reply' },
 ]
 
 const GRAMMAR_PROMPT = `You are a grammar-only proofreader. You ONLY fix grammar, spelling, and punctuation.

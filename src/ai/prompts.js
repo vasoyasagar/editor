@@ -1,12 +1,12 @@
 export const STYLES = [
-  { id: 'grammar', icon: '✏️', label: 'Fix Grammar', tip: 'Fix spelling, grammar & punctuation' },
-  { id: 'professional', icon: '👔', label: 'Professional', tip: 'Clear, business-appropriate tone' },
-  { id: 'formal', icon: '📜', label: 'Formal', tip: 'Polished, corporate-level language' },
-  { id: 'friendly', icon: '🤝', label: 'Friendly', tip: 'Warm and approachable tone' },
-  { id: 'funny', icon: '😄', label: 'Funny', tip: 'Witty, playful with humor' },
-  { id: 'casual', icon: '💬', label: 'Casual', tip: 'Relaxed, everyday conversational' },
-  { id: 'answer', icon: '💡', label: 'Answer', tip: 'Generate a detailed reply to selected message' },
-  { id: 'reply', icon: '↩️', label: 'Reply', tip: 'Generate a short, quick reply' },
+  { id: 'grammar', icon: '✏️', label: 'Fix Grammar', tip: 'Fix spelling, grammar & punctuation', usage: 'Select text → click to fix' },
+  { id: 'professional', icon: '👔', label: 'Professional', tip: 'Clear, business-appropriate tone', usage: 'Select text → click to rewrite' },
+  { id: 'formal', icon: '📜', label: 'Formal', tip: 'Polished, corporate-level language', usage: 'Select text → click to rewrite' },
+  { id: 'friendly', icon: '🤝', label: 'Friendly', tip: 'Warm and approachable tone', usage: 'Select text → click to rewrite' },
+  { id: 'funny', icon: '😄', label: 'Funny', tip: 'Witty, playful with humor', usage: 'Select text → click to rewrite' },
+  { id: 'casual', icon: '💬', label: 'Casual', tip: 'Relaxed, everyday conversational', usage: 'Select text → click to rewrite' },
+  { id: 'answer', icon: '💡', label: 'Answer', tip: 'Generate a detailed reply to selected message', usage: 'Select source message → add your draft (optional)' },
+  { id: 'reply', icon: '↩️', label: 'Reply', tip: 'Generate a short, quick reply', usage: 'Select source message → add your draft (optional)' },
 ]
 
 const GRAMMAR_PROMPT = `You are a grammar-only proofreader. You ONLY fix grammar, spelling, and punctuation.

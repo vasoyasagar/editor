@@ -86,7 +86,7 @@ function AIDropdown() {
               key={style.id}
               className="ai-dropdown-item"
               role="menuitem"
-              title={style.tip}
+              title={style.usage}
               onClick={() => handleRewrite(style.id)}
             >
               <span className="ai-item-icon">{style.icon}</span>

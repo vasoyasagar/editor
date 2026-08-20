@@ -101,7 +101,7 @@ function AIContextMenu() {
               className="ai-context-item"
               role="menuitem"
               disabled={loading}
-              title={style.tip}
+              title={style.usage}
               onClick={() => handleRewrite(style.id)}
             >
               <span className="ai-item-icon">{style.icon}</span>

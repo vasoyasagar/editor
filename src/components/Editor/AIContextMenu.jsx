@@ -119,8 +119,16 @@ function AIContextMenu() {
         styleId={answerModal.styleId}
         sourceText={answerModal.source}
         onInsert={(text) => {
-          window.getSelection()?.collapseToEnd()
-          editorRef.current?.insertMarkdown('\n\n' + text + '\n\n')
+          const md = editorRef.current?.getMarkdown() || ''
+          const src = answerModal.source
+          const idx = md.indexOf(src)
+          if (idx !== -1) {
+            const insertAt = idx + src.length
+            const updated = md.slice(0, insertAt) + '\n\n' + text + '\n\n' + md.slice(insertAt)
+            editorRef.current?.setMarkdown(updated)
+          } else {
+            editorRef.current?.insertMarkdown('\n\n' + text + '\n\n')
+          }
         }}
         onClose={() => setAnswerModal({ open: false, styleId: null, source: '' })}
       />

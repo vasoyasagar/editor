@@ -7,6 +7,7 @@ let listeners = []
 export function showToast(message, type = 'info', duration = 2500) {
   const id = Date.now() + Math.random()
   const toast = { id, message, type }
+  toasts.splice(0, toasts.length)
   toasts.push(toast)
   listeners.forEach((fn) => fn([...toasts]))
   setTimeout(() => {

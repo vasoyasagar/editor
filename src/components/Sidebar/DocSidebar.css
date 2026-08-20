@@ -8,6 +8,7 @@
   gap: 10px;
   overflow: hidden;
   min-height: 0;
+  transition: width 0.2s ease, opacity 0.2s ease;
 }
 
 .app.doc-collapsed .doc-sidebar {

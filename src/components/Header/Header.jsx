@@ -9,8 +9,7 @@ function Header() {
   const currentDoc = useDocStore((s) => s.currentDoc)
   const renameDoc = useDocStore((s) => s.renameDoc)
   const createDoc = useDocStore((s) => s.createDoc)
-  const toggleDocSidebarMobile = useUIStore((s) => s.toggleDocSidebarMobile)
-  const toggleOutlineSidebar = useUIStore((s) => s.toggleOutlineSidebar)
+  const toggleDocSidebar = useUIStore((s) => s.toggleDocSidebar)
   const openModal = useUIStore((s) => s.openModal)
   const theme = usePrefsStore((s) => s.theme)
   const setTheme = usePrefsStore((s) => s.setTheme)
@@ -28,10 +27,10 @@ function Header() {
     <header className="header-card" role="banner">
       <div className="header-left">
         <button
-          className="icon-btn mobile-only"
-          onClick={toggleDocSidebarMobile}
-          title="Documents"
-          aria-label="Toggle documents sidebar"
+          className="icon-btn"
+          onClick={toggleDocSidebar}
+          title="Toggle documents panel"
+          aria-label="Toggle documents panel"
         >
           📑
         </button>
@@ -93,14 +92,6 @@ function Header() {
           aria-label="Keyboard shortcuts"
         >
           ❓
-        </button>
-        <button
-          className="icon-btn"
-          onClick={toggleOutlineSidebar}
-          title="Toggle outline"
-          aria-label="Toggle outline sidebar"
-        >
-          📋
         </button>
       </div>
     </header>

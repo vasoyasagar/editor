@@ -2,13 +2,9 @@ import { useEffect } from 'react'
 import Header from './components/Header/Header'
 import StatusBar from './components/Toolbar/StatusBar'
 import DocSidebar from './components/Sidebar/DocSidebar'
-import OutlineSidebar from './components/Sidebar/OutlineSidebar'
-import Editor, { MilkdownRenderer } from './components/Editor/Editor'
-import SlashMenu from './components/Editor/SlashMenu'
-import FindPanel from './components/FindReplace/FindPanel'
+import { EditorWrapper, EditorRenderer } from './components/Editor/Editor'
 import HelpModal from './components/Modals/HelpModal'
 import SettingsModal from './components/Modals/SettingsModal'
-import LinkModal from './components/Modals/LinkModal'
 import ToastContainer from './components/Toast/ToastContainer'
 import usePrefsStore from './store/usePrefsStore'
 import useUIStore from './store/useUIStore'
@@ -22,9 +18,8 @@ function AppContent() {
   const fontSize = usePrefsStore((s) => s.fontSize)
   const lineHeight = usePrefsStore((s) => s.lineHeight)
   const spellcheck = usePrefsStore((s) => s.spellcheck)
-  const outlineCollapsed = useUIStore((s) => s.outlineSidebarCollapsed)
+  const docSidebarCollapsed = useUIStore((s) => s.docSidebarCollapsed)
   const docMobileOpen = useUIStore((s) => s.docSidebarMobileOpen)
-  const outlineMobileOpen = useUIStore((s) => s.outlineSidebarMobileOpen)
   const currentDoc = useDocStore((s) => s.currentDoc)
   const persistCurrent = useDocStore((s) => s.persistCurrent)
 
@@ -50,39 +45,31 @@ function AppContent() {
   }, 500)
 
   const bodyClasses = [
-    outlineCollapsed && 'outline-collapsed',
+    docSidebarCollapsed && 'doc-collapsed',
     docMobileOpen && 'is-doc-open',
-    outlineMobileOpen && 'is-outline-open',
   ].filter(Boolean).join(' ')
 
   const closeDocSidebarMobile = useUIStore((s) => s.closeDocSidebarMobile)
 
   return (
     <div className={`app ${bodyClasses}`}>
-      <Editor>
+      <EditorWrapper>
         <Header />
         <main className="workspace">
-          {(docMobileOpen || outlineMobileOpen) && (
-            <div className="mobile-backdrop" onClick={() => {
-              closeDocSidebarMobile()
-              if (outlineMobileOpen) useUIStore.getState().toggleOutlineSidebar()
-            }} />
+          {docMobileOpen && (
+            <div className="mobile-backdrop" onClick={closeDocSidebarMobile} />
           )}
           <DocSidebar />
           <div className="editor-container">
-            <div className="editor-card" style={{ position: 'relative' }} spellCheck={spellcheck}>
-              <MilkdownRenderer />
-              <SlashMenu />
+            <div className="editor-card" spellCheck={spellcheck}>
+              <EditorRenderer />
             </div>
           </div>
-          <OutlineSidebar />
         </main>
         <StatusBar />
-        <FindPanel />
-      </Editor>
+      </EditorWrapper>
       <HelpModal />
       <SettingsModal />
-      <LinkModal />
       <ToastContainer />
     </div>
   )

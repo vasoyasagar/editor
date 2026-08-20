@@ -5,12 +5,10 @@ import useDocStore from '../store/useDocStore'
 import { exportCurrentDoc } from '../utils/fileOps'
 
 export default function useKeyboardShortcuts() {
-  const toggleOutlineSidebar = useUIStore((s) => s.toggleOutlineSidebar)
-  const toggleFindPanel = useUIStore((s) => s.toggleFindPanel)
+  const toggleDocSidebar = useUIStore((s) => s.toggleDocSidebar)
   const activeModal = useUIStore((s) => s.activeModal)
   const closeModal = useUIStore((s) => s.closeModal)
   const openModal = useUIStore((s) => s.openModal)
-  const findPanelOpen = useUIStore((s) => s.findPanelOpen)
 
   const theme = usePrefsStore((s) => s.theme)
   const setTheme = usePrefsStore((s) => s.setTheme)
@@ -21,10 +19,9 @@ export default function useKeyboardShortcuts() {
     const handleKeyDown = (e) => {
       const mod = e.ctrlKey || e.metaKey
 
-      // Escape — close things in priority order
+      // Escape — close modals
       if (e.key === 'Escape') {
         if (activeModal) { closeModal(); return }
-        if (findPanelOpen) { toggleFindPanel(false); return }
         return
       }
 
@@ -41,7 +38,7 @@ export default function useKeyboardShortcuts() {
       // Ctrl+Shift combos
       if (e.shiftKey) {
         const k = e.key.toLowerCase()
-        if (k === 'l') { e.preventDefault(); toggleOutlineSidebar(); return }
+        if (k === 'e') { e.preventDefault(); toggleDocSidebar(); return }
         if (k === 'd') {
           e.preventDefault()
           const next = (theme === 'dark' || theme === 'nord') ? 'light' : 'dark'
@@ -54,12 +51,10 @@ export default function useKeyboardShortcuts() {
       const key = e.key.toLowerCase()
       if (key === 'n') { e.preventDefault(); createDoc(); return }
       if (key === 's') { e.preventDefault(); exportCurrentDoc(); return }
-      if (key === 'f') { e.preventDefault(); toggleFindPanel(true); return }
-      if (key === 'k') { e.preventDefault(); openModal('link'); return }
       if (key === ',') { e.preventDefault(); openModal('settings'); return }
     }
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [activeModal, findPanelOpen, theme])
+  }, [activeModal, theme])
 }

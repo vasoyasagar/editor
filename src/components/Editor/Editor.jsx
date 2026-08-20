@@ -1,106 +1,103 @@
-import { useEffect, useRef } from 'react'
-import { Milkdown, MilkdownProvider, useEditor, useInstance } from '@milkdown/react'
-import { Editor as MilkdownEditor, defaultValueCtx, editorViewCtx, parserCtx, rootCtx } from '@milkdown/kit/core'
-import { commonmark, toggleStrongCommand, toggleEmphasisCommand, wrapInBlockquoteCommand, turnIntoTextCommand, insertHrCommand } from '@milkdown/kit/preset/commonmark'
-import { gfm, toggleStrikethroughCommand, insertTableCommand } from '@milkdown/kit/preset/gfm'
-import { history } from '@milkdown/kit/plugin/history'
-import { listener, listenerCtx } from '@milkdown/kit/plugin/listener'
-import { clipboard } from '@milkdown/kit/plugin/clipboard'
-import { trailing } from '@milkdown/kit/plugin/trailing'
-import { indent } from '@milkdown/kit/plugin/indent'
-import { cursor } from '@milkdown/kit/plugin/cursor'
-import { callCommand } from '@milkdown/kit/utils'
-import { EditorProvider } from './EditorContext'
+import { useEffect, useRef, useCallback } from 'react'
+import {
+  MDXEditor,
+  headingsPlugin,
+  listsPlugin,
+  quotePlugin,
+  thematicBreakPlugin,
+  markdownShortcutPlugin,
+  linkPlugin,
+  linkDialogPlugin,
+  tablePlugin,
+  imagePlugin,
+  frontmatterPlugin,
+  diffSourcePlugin,
+  codeBlockPlugin,
+  codeMirrorPlugin,
+  toolbarPlugin,
+} from '@mdxeditor/editor'
+import '@mdxeditor/editor/style.css'
+import { EditorProvider, useEditorCtx } from './EditorContext'
+import EditorToolbar from './EditorToolbar'
 import useDocStore from '../../store/useDocStore'
 import './Editor.css'
 
-// Export command keys so Toolbar can use them
-export {
-  toggleStrongCommand,
-  toggleEmphasisCommand,
-  wrapInBlockquoteCommand,
-  turnIntoTextCommand,
-  insertHrCommand,
-  toggleStrikethroughCommand,
-  insertTableCommand,
-}
-
-function MilkdownEditorInner({ children }) {
-  const updateContent = useDocStore((s) => s.updateContent)
-  const currentDoc = useDocStore((s) => s.currentDoc)
+function EditorWrapper({ children }) {
+  const editorRef = useRef(null)
   const currentDocId = useDocStore((s) => s.currentDocId)
+  const currentDoc = useDocStore((s) => s.currentDoc)
   const lastDocIdRef = useRef(null)
 
-  const { get } = useEditor((root) => {
-    const content = currentDoc?.content || ''
-    return MilkdownEditor.make()
-      .config((ctx) => {
-        ctx.set(rootCtx, root)
-        ctx.set(defaultValueCtx, content)
-        ctx.get(listenerCtx)
-          .markdownUpdated((_ctx, markdown, prevMarkdown) => {
-            if (markdown !== prevMarkdown) {
-              updateContent(markdown)
-            }
-          })
-      })
-      .use(commonmark)
-      .use(gfm)
-      .use(history)
-      .use(listener)
-      .use(clipboard)
-      .use(trailing)
-      .use(indent)
-      .use(cursor)
-  }, [])
-
-  const [loading, getInstance] = useInstance()
-
-  // When current doc changes externally, replace editor content
+  // When current doc changes, replace editor content
   useEffect(() => {
-    if (loading) return
-    const editor = getInstance()
-    if (!editor) return
-
     if (!currentDocId) return
     if (currentDocId === lastDocIdRef.current) return
     lastDocIdRef.current = currentDocId
 
     const content = currentDoc?.content || ''
-
-    editor.action((ctx) => {
-      const view = ctx.get(editorViewCtx)
-      const parser = ctx.get(parserCtx)
-      const doc = parser(content)
-      if (!doc) return
-      const { state } = view
-      const tr = state.tr.replaceWith(0, state.doc.content.size, doc.content)
-      // Place cursor at the start of the document
-      tr.setSelection(tr.selection.constructor.atStart(tr.doc))
-      view.dispatch(tr)
-      view.dom.scrollTop = 0
-    })
-  }, [loading, currentDocId])
+    editorRef.current?.setMarkdown(content)
+  }, [currentDocId])
 
   return (
-    <EditorProvider value={{ getInstance, loading }}>
+    <EditorProvider value={{ editorRef }}>
       {children}
     </EditorProvider>
   )
 }
 
-function Editor({ children }) {
+function EditorRenderer() {
+  const { editorRef } = useEditorCtx()
+  const currentDoc = useDocStore((s) => s.currentDoc)
+  const updateContent = useDocStore((s) => s.updateContent)
+
+  const handleChange = useCallback((markdown) => {
+    updateContent(markdown)
+  }, [updateContent])
+
+  const initialMarkdown = currentDoc?.content || ''
+
   return (
-    <MilkdownProvider>
-      <MilkdownEditorInner>
-        {children}
-      </MilkdownEditorInner>
-    </MilkdownProvider>
+    <MDXEditor
+      ref={editorRef}
+      markdown={initialMarkdown}
+      onChange={handleChange}
+      contentEditableClassName="prose-editor"
+      plugins={[
+        headingsPlugin(),
+        listsPlugin(),
+        quotePlugin(),
+        thematicBreakPlugin(),
+        markdownShortcutPlugin(),
+        linkPlugin(),
+        linkDialogPlugin(),
+        tablePlugin(),
+        imagePlugin(),
+        frontmatterPlugin(),
+        codeBlockPlugin({ defaultCodeBlockLanguage: 'js' }),
+        codeMirrorPlugin({
+          codeBlockLanguages: {
+            js: 'JavaScript',
+            ts: 'TypeScript',
+            jsx: 'JSX',
+            tsx: 'TSX',
+            css: 'CSS',
+            html: 'HTML',
+            json: 'JSON',
+            python: 'Python',
+            bash: 'Bash',
+            sql: 'SQL',
+            markdown: 'Markdown',
+            '': 'Plain Text',
+          },
+        }),
+        diffSourcePlugin({ viewMode: 'rich-text' }),
+        toolbarPlugin({
+          toolbarContents: () => <EditorToolbar />,
+        }),
+      ]}
+    />
   )
 }
 
-export function MilkdownRenderer() {
-  return <Milkdown />
-}
-
-export default Editor
+export { EditorWrapper, EditorRenderer }
+export default EditorWrapper

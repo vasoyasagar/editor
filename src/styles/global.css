@@ -30,16 +30,16 @@ body {
 .workspace {
   flex: 1;
   display: grid;
-  grid-template-columns: 260px minmax(0, 1fr) 240px;
+  grid-template-columns: 260px minmax(0, 1fr);
   gap: 10px;
   padding: 10px;
-  margin-top: 70px;
+  margin-top: 100px;
   min-height: 0;
   overflow: hidden;
 }
 
-.app.outline-collapsed .workspace {
-  grid-template-columns: 260px minmax(0, 1fr) 0;
+.app.doc-collapsed .workspace {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 /* ---------- Editor container ---------- */
@@ -182,39 +182,21 @@ body {
     padding-bottom: 32px;
   }
 
-  .doc-sidebar,
-  .outline-sidebar {
+  .doc-sidebar {
     position: fixed;
     top: 0;
     bottom: 0;
+    left: 0;
     z-index: 1100;
     width: 280px;
     border-radius: 0;
     box-shadow: var(--shadow-lg);
     transition: transform 0.25s ease;
-  }
-
-  .doc-sidebar {
-    left: 0;
     transform: translateX(-100%);
-  }
-
-  .outline-sidebar {
-    right: 0;
-    left: auto;
-    transform: translateX(100%);
   }
 
   .app.is-doc-open .doc-sidebar {
     transform: translateX(0);
-  }
-
-  .app.is-outline-open .outline-sidebar {
-    transform: translateX(0);
-  }
-
-  .app.outline-collapsed .outline-sidebar {
-    display: flex;
   }
 
   .mobile-backdrop {
@@ -233,10 +215,6 @@ body {
   }
 
   .header-card {
-    top: 0;
-    left: 0;
-    right: 0;
-    border-radius: 0;
     padding: 8px 10px;
     gap: 8px;
   }

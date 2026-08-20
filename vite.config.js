@@ -8,12 +8,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          milkdown: [
-            '@milkdown/kit',
-            '@milkdown/react',
-            '@milkdown/plugin-listener',
-            '@milkdown/plugin-history',
-          ],
+          mdxeditor: ['@mdxeditor/editor'],
         },
       },
     },

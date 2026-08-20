@@ -18,7 +18,6 @@ const useDocStore = create((set, get) => ({
   currentDoc: null,  // full doc: {id, title, content, pinned, createdAt, updatedAt, lastOpenedAt}
   initialized: false,
   saveStatus: 'saved', // 'saved' | 'saving' | 'error'
-  _switching: false,   // true during doc switch to suppress updateContent
   _loadedContent: null, // content at time of load, to compare against edits
 
   // ---- Initialize from IndexedDB ----
@@ -75,9 +74,7 @@ const useDocStore = create((set, get) => ({
     await saveDoc(doc)
 
     await saveCurrentDocId(id)
-    set({ currentDocId: id, currentDoc: doc, saveStatus: 'saved', _switching: true, _loadedContent: doc.content || '' })
-    // Reset flag after editor has fully replaced content
-    setTimeout(() => set({ _switching: false }), 600)
+    set({ currentDocId: id, currentDoc: doc, saveStatus: 'saved', _loadedContent: doc.content || '' })
   },
 
   // ---- Create new doc ----
@@ -109,8 +106,8 @@ const useDocStore = create((set, get) => ({
 
   // ---- Update current doc content (in memory only, for autosave) ----
   updateContent: (content) => {
-    const { currentDoc, _switching, _loadedContent } = get()
-    if (!currentDoc || _switching) return
+    const { currentDoc, _loadedContent } = get()
+    if (!currentDoc) return
     // Only mark as modified if content actually changed from what was loaded
     if (content === _loadedContent) return
     set({

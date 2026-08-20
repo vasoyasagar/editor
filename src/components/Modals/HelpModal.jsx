@@ -19,17 +19,17 @@ function HelpModal() {
             <dt><kbd>Ctrl</kbd>+<kbd>N</kbd></dt><dd>New document</dd>
             <dt><kbd>Ctrl</kbd>+<kbd>B</kbd></dt><dd>Bold</dd>
             <dt><kbd>Ctrl</kbd>+<kbd>I</kbd></dt><dd>Italic</dd>
+            <dt><kbd>Ctrl</kbd>+<kbd>U</kbd></dt><dd>Underline</dd>
             <dt><kbd>Ctrl</kbd>+<kbd>E</kbd></dt><dd>Inline code</dd>
             <dt><kbd>Ctrl</kbd>+<kbd>K</kbd></dt><dd>Insert link</dd>
-            <dt><kbd>Ctrl</kbd>+<kbd>F</kbd></dt><dd>Find & replace</dd>
-            <dt><kbd>Ctrl</kbd>+<kbd>\</kbd></dt><dd>Focus mode</dd>
+            <dt><kbd>Ctrl</kbd>+<kbd>Z</kbd></dt><dd>Undo</dd>
+            <dt><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd></dt><dd>Redo</dd>
+            <dt><kbd>Ctrl</kbd>+<kbd>S</kbd></dt><dd>Export as .md</dd>
             <dt><kbd>Ctrl</kbd>+<kbd>,</kbd></dt><dd>Settings</dd>
-            <dt><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd></dt><dd>Toggle documents sidebar</dd>
             <dt><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd></dt><dd>Toggle outline sidebar</dd>
             <dt><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd></dt><dd>Toggle dark mode</dd>
-            <dt><kbd>/</kbd></dt><dd>Slash menu (start of line)</dd>
             <dt><kbd>?</kbd></dt><dd>Show this help</dd>
-            <dt><kbd>Esc</kbd></dt><dd>Close dialog / exit focus</dd>
+            <dt><kbd>Esc</kbd></dt><dd>Close dialog</dd>
           </dl>
           <h3 className="modal-subtitle">Markdown Shortcuts</h3>
           <dl className="shortcuts">

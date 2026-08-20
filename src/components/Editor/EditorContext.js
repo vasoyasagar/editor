@@ -1,10 +1,6 @@
 import { createContext, useContext } from 'react'
 
-// Shared context so Toolbar and other components can call editor commands
-const EditorContext = createContext({
-  getInstance: () => null,
-  loading: true,
-})
+const EditorContext = createContext({ editorRef: { current: null } })
 
 export const EditorProvider = EditorContext.Provider
 

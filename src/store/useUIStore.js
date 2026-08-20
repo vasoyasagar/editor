@@ -1,30 +1,22 @@
 import { create } from 'zustand'
 
 const useUIStore = create((set, get) => ({
-  outlineSidebarCollapsed: false,
+  docSidebarCollapsed: false,
   docSidebarMobileOpen: false,
-  outlineSidebarMobileOpen: false,
   activeModal: null,
-  findPanelOpen: false,
 
-  toggleDocSidebarMobile: () => {
-    set((s) => ({ docSidebarMobileOpen: !s.docSidebarMobileOpen, outlineSidebarMobileOpen: false }))
+  toggleDocSidebar: () => {
+    const isNarrow = window.matchMedia('(max-width: 980px)').matches
+    if (isNarrow) {
+      set((s) => ({ docSidebarMobileOpen: !s.docSidebarMobileOpen }))
+    } else {
+      set((s) => ({ docSidebarCollapsed: !s.docSidebarCollapsed }))
+    }
   },
   closeDocSidebarMobile: () => set({ docSidebarMobileOpen: false }),
 
-  toggleOutlineSidebar: () => {
-    const isNarrow = window.matchMedia('(max-width: 980px)').matches
-    if (isNarrow) {
-      set((s) => ({ outlineSidebarMobileOpen: !s.outlineSidebarMobileOpen, docSidebarMobileOpen: false }))
-    } else {
-      set((s) => ({ outlineSidebarCollapsed: !s.outlineSidebarCollapsed }))
-    }
-  },
-
   openModal: (name) => set({ activeModal: name }),
   closeModal: () => set({ activeModal: null }),
-
-  toggleFindPanel: (open) => set((s) => ({ findPanelOpen: open ?? !s.findPanelOpen })),
 }))
 
 export default useUIStore

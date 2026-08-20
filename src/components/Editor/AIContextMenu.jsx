@@ -75,7 +75,7 @@ function AIContextMenu() {
       const result = await rewriteText(styleId, selectedText)
       if (!result) { setLoading(false); return }
       window.getSelection()?.collapseToEnd()
-      editorRef.current?.insertMarkdown('\n\n' + result)
+      editorRef.current?.insertMarkdown('\n\n' + result + '\n\n')
       showToast(`✅ ${style?.label} done!`, 'success')
     } catch (e) {
       showToast(`❌ ${e.message?.slice(0, 80)}`, 'error')
@@ -120,7 +120,7 @@ function AIContextMenu() {
         sourceText={answerModal.source}
         onInsert={(text) => {
           window.getSelection()?.collapseToEnd()
-          editorRef.current?.insertMarkdown('\n\n' + text)
+          editorRef.current?.insertMarkdown('\n\n' + text + '\n\n')
         }}
         onClose={() => setAnswerModal({ open: false, styleId: null, source: '' })}
       />

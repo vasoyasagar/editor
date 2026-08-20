@@ -49,7 +49,7 @@ export default function useKeyboardShortcuts(editorRef) {
           rewriteText('grammar', selected).then((result) => {
             if (result) {
               window.getSelection()?.collapseToEnd()
-              editorRef?.current?.insertMarkdown('\n\n' + result)
+              editorRef?.current?.insertMarkdown('\n\n' + result + '\n\n')
               showToast('✅ Grammar fixed!', 'success')
             }
           }).catch((err) => showToast(`❌ ${err.message?.slice(0, 80)}`, 'error'))

@@ -7,6 +7,103 @@
   background: transparent;
   border: none;
   --accentColor: var(--accent);
+  --baseTextColor: var(--text);
+  --baseBgColor: var(--surface);
+  --borderColor: var(--border);
+  --secondaryBgColor: var(--surface-2);
+  --popoverBgColor: var(--surface);
+  --popoverBorderColor: var(--border);
+  --inputBgColor: var(--surface-2);
+  --inputBorderColor: var(--border);
+  --inputTextColor: var(--text);
+  color: var(--text);
+}
+
+/* Toolbar icons and buttons */
+.mdxeditor [role="toolbar"] button,
+.mdxeditor [role="toolbar"] [role="radio"] {
+  color: var(--text);
+}
+
+.mdxeditor [role="toolbar"] button:hover,
+.mdxeditor [role="toolbar"] [role="radio"]:hover {
+  background: var(--surface-2);
+}
+
+.mdxeditor [role="toolbar"] [aria-checked="true"],
+.mdxeditor [role="toolbar"] [data-state="on"] {
+  background: var(--surface-3);
+  color: var(--accent);
+}
+
+.mdxeditor [role="toolbar"] svg {
+  color: var(--text);
+  fill: var(--text);
+}
+
+.mdxeditor [role="toolbar"] [aria-checked="true"] svg,
+.mdxeditor [role="toolbar"] [data-state="on"] svg {
+  color: var(--accent);
+  fill: var(--accent);
+}
+
+/* Toolbar separators */
+.mdxeditor [role="separator"] {
+  background: var(--border);
+}
+
+/* Select / dropdown in toolbar */
+.mdxeditor select,
+.mdxeditor [role="combobox"] {
+  background: var(--surface-2);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+/* Popovers, dialogs (link dialog, etc.) */
+.mdxeditor [role="dialog"],
+.mdxeditor [data-radix-popper-content-wrapper] > div {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+  color: var(--text);
+}
+
+.mdxeditor [role="dialog"] input,
+.mdxeditor [role="dialog"] button {
+  color: var(--text);
+  background: var(--surface-2);
+  border-color: var(--border);
+}
+
+/* Table editor */
+.mdxeditor table {
+  border-color: var(--border);
+}
+
+.mdxeditor th,
+.mdxeditor td {
+  border-color: var(--border);
+  color: var(--text);
+}
+
+/* Source/diff mode CodeMirror */
+.mdxeditor .cm-editor {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.mdxeditor .cm-editor .cm-gutters {
+  background: var(--surface-2);
+  color: var(--text-muted);
+  border-color: var(--border);
+}
+
+.mdxeditor .cm-editor .cm-cursor {
+  border-color: var(--text);
+}
+
+.mdxeditor .cm-editor .cm-activeLine {
+  background: var(--surface-2);
 }
 
 /* Content editable area */
@@ -213,4 +310,102 @@
 .mdxeditor .cm-editor {
   font-family: "JetBrains Mono", monospace;
   font-size: var(--editor-font-size, 16px);
+  background: var(--surface);
+  color: var(--text);
+}
+
+/* Force MDXEditor internal popover/dropdown dark theming */
+.mdxeditor.dark-theme,
+.mdxeditor.dark-theme [role="toolbar"],
+.mdxeditor.dark-theme [role="dialog"] {
+  color-scheme: dark;
+}
+
+.mdxeditor.dark-theme [role="listbox"],
+.mdxeditor.dark-theme [role="menu"],
+.mdxeditor.dark-theme [data-radix-popper-content-wrapper] div {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+.mdxeditor.dark-theme [role="listbox"] [role="option"],
+.mdxeditor.dark-theme [role="menu"] [role="menuitem"] {
+  color: var(--text);
+}
+
+.mdxeditor.dark-theme [role="listbox"] [role="option"]:hover,
+.mdxeditor.dark-theme [role="menu"] [role="menuitem"]:hover {
+  background: var(--surface-2);
+}
+
+.mdxeditor.dark-theme input,
+.mdxeditor.dark-theme textarea {
+  background: var(--surface-2);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+/* Radix portaled dropdowns (rendered outside .mdxeditor) */
+[data-theme="dark"] [data-radix-popper-content-wrapper] > div,
+[data-theme="nord"] [data-radix-popper-content-wrapper] > div,
+[data-theme="dark"] [data-radix-select-content],
+[data-theme="nord"] [data-radix-select-content] {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5) !important;
+}
+
+[data-theme="dark"] [data-radix-popper-content-wrapper] [role="option"],
+[data-theme="nord"] [data-radix-popper-content-wrapper] [role="option"],
+[data-theme="dark"] [data-radix-popper-content-wrapper] [role="menuitem"],
+[data-theme="nord"] [data-radix-popper-content-wrapper] [role="menuitem"] {
+  color: var(--text) !important;
+}
+
+[data-theme="dark"] [data-radix-popper-content-wrapper] [role="option"]:hover,
+[data-theme="nord"] [data-radix-popper-content-wrapper] [role="option"]:hover,
+[data-theme="dark"] [data-radix-popper-content-wrapper] [data-highlighted],
+[data-theme="nord"] [data-radix-popper-content-wrapper] [data-highlighted] {
+  background: var(--surface-2) !important;
+}
+
+/* MDXEditor dialogs (image, link, etc.) — portaled to body */
+[data-theme="dark"] [role="dialog"],
+[data-theme="nord"] [role="dialog"] {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6) !important;
+}
+
+[data-theme="dark"] [role="dialog"] input,
+[data-theme="dark"] [role="dialog"] textarea,
+[data-theme="nord"] [role="dialog"] input,
+[data-theme="nord"] [role="dialog"] textarea {
+  background: var(--surface-2) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+}
+
+[data-theme="dark"] [role="dialog"] label,
+[data-theme="dark"] [role="dialog"] span,
+[data-theme="dark"] [role="dialog"] p,
+[data-theme="nord"] [role="dialog"] label,
+[data-theme="nord"] [role="dialog"] span,
+[data-theme="nord"] [role="dialog"] p {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] [role="dialog"] button,
+[data-theme="nord"] [role="dialog"] button {
+  background: var(--surface-2) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+}
+
+[data-theme="dark"] [role="dialog"] button:hover,
+[data-theme="nord"] [role="dialog"] button:hover {
+  background: var(--surface-3) !important;
 }

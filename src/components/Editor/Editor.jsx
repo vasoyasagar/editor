@@ -20,6 +20,7 @@ import '@mdxeditor/editor/style.css'
 import { EditorProvider, useEditorCtx } from './EditorContext'
 import EditorToolbar from './EditorToolbar'
 import useDocStore from '../../store/useDocStore'
+import usePrefsStore from '../../store/usePrefsStore'
 import './Editor.css'
 
 function EditorWrapper({ children }) {
@@ -49,16 +50,19 @@ function EditorRenderer() {
   const { editorRef } = useEditorCtx()
   const currentDoc = useDocStore((s) => s.currentDoc)
   const updateContent = useDocStore((s) => s.updateContent)
+  const theme = usePrefsStore((s) => s.theme)
 
   const handleChange = useCallback((markdown) => {
     updateContent(markdown)
   }, [updateContent])
 
   const initialMarkdown = currentDoc?.content || ''
+  const isDark = theme === 'dark' || theme === 'nord'
 
   return (
     <MDXEditor
       ref={editorRef}
+      className={isDark ? 'dark-theme' : ''}
       markdown={initialMarkdown}
       onChange={handleChange}
       contentEditableClassName="prose-editor"

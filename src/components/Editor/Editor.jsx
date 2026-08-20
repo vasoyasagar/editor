@@ -63,7 +63,7 @@ function EditorRenderer() {
       onChange={handleChange}
       contentEditableClassName="prose-editor"
       plugins={[
-        headingsPlugin(),
+        headingsPlugin({ allowedHeadingLevels: [1, 2, 3, 4, 5, 6] }),
         listsPlugin(),
         quotePlugin(),
         thematicBreakPlugin(),
